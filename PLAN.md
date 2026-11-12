@@ -18,7 +18,7 @@ commit → push → marcar acá.
 
 ## Etapa 1 — Base del proyecto
 
-- [ ] **1. Esqueleto Django.** `requirements.txt`, `.gitignore`, proyecto
+- [x] **1. Esqueleto Django.** `requirements.txt`, `.gitignore`, proyecto
   `config`, app `puntos`, idioma y zona horaria, base en `data/db.sqlite3`.
   *Listo cuando:* `python manage.py check` pasa y el servidor levanta.
 - [ ] **2. Modelo `Punto`.** Nombre, descripción, latitud, longitud, estado
