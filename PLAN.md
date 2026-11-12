@@ -16,6 +16,24 @@ commit → push → marcar acá.
   además, solo para dar respuesta rápida al usuario.
 - SQLite en una carpeta `data/`, que en Docker es un volumen.
 
+## Criterios de código
+
+Se revisan al cerrar cada paso.
+
+- **Una sola fuente de verdad.** Cada regla se escribe una vez. Los límites de
+  las coordenadas están como constantes en `puntos/models.py`; el formulario, la
+  API y la pantalla los toman de ahí.
+- **Sin validación duplicada.** Valida el modelo. El `ModelForm` reutiliza esas
+  reglas y el navegador recibe los límites desde el backend.
+- **Sin números ni textos sueltos.** Constantes con nombre y `HTTPStatus` para
+  los códigos de respuesta.
+- **Cada archivo con una responsabilidad.** `models.py` datos y reglas,
+  `forms.py` validación de entrada, `views.py` pedidos y respuestas, `urls.py`
+  rutas.
+- **Sin código repetido.** Lo que se usa dos veces va a una función.
+- **Sin funcionalidad que nadie pidió.** Nada de paginación, versionado ni
+  autenticación: la consigna no los pide y se anotan en el README como mejoras.
+
 ## Etapa 1 — Base del proyecto
 
 - [x] **1. Esqueleto Django.** `requirements.txt`, `.gitignore`, proyecto
@@ -31,7 +49,7 @@ commit → push → marcar acá.
 Cada paso arranca por sus tests (caso feliz y casos de error).
 
 - [x] **3. Listar puntos.** `GET /api/puntos/` devuelve JSON.
-- [ ] **4. Crear punto.** `POST /api/puntos/`, con errores de validación en JSON
+- [x] **4. Crear punto.** `POST /api/puntos/`, con errores de validación en JSON
   y código 400.
 - [ ] **5. Editar punto.** `PUT /api/puntos/<id>/`, con 404 si no existe.
 - [ ] **6. Eliminar punto.** `DELETE /api/puntos/<id>/`, con 404 si no existe.

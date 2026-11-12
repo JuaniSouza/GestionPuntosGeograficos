@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import Client, TestCase
 
 from .models import Punto
 
@@ -114,3 +114,65 @@ class ListarPuntosApiTests(TestCase):
         respuesta = self.client.delete("/api/puntos/")
 
         self.assertEqual(respuesta.status_code, 405)
+
+
+class CrearPuntoApiTests(TestCase):
+    DATOS = {
+        "nombre": "Obelisco",
+        "descripcion": "Monumento histórico de Buenos Aires",
+        "latitud": -34.603722,
+        "longitud": -58.381592,
+        "estado": "activo",
+    }
+
+    def crear(self, datos):
+        return self.client.post(
+            "/api/puntos/", data=datos, content_type="application/json"
+        )
+
+    def test_crea_el_punto_y_lo_devuelve(self):
+        respuesta = self.crear(self.DATOS)
+
+        self.assertEqual(respuesta.status_code, 201)
+        punto = Punto.objects.get()
+        self.assertEqual(punto.nombre, "Obelisco")
+        self.assertEqual(punto.latitud, Decimal("-34.603722"))
+        self.assertEqual(respuesta.json(), {"punto": {"id": punto.id, **self.DATOS}})
+
+    def test_coordenada_fuera_de_rango_devuelve_el_error_del_campo(self):
+        respuesta = self.crear({**self.DATOS, "latitud": 200})
+
+        self.assertEqual(respuesta.status_code, 400)
+        self.assertEqual(list(respuesta.json()["errores"]), ["latitud"])
+        self.assertEqual(Punto.objects.count(), 0)
+
+    def test_informa_todos_los_campos_con_error(self):
+        respuesta = self.crear({"descripcion": "Sin nada más"})
+
+        self.assertEqual(respuesta.status_code, 400)
+        self.assertEqual(
+            sorted(respuesta.json()["errores"]),
+            ["estado", "latitud", "longitud", "nombre"],
+        )
+
+    def test_json_mal_formado_devuelve_error_general(self):
+        respuesta = self.crear("{esto no es json")
+
+        self.assertEqual(respuesta.status_code, 400)
+        self.assertEqual(list(respuesta.json()["errores"]), ["general"])
+
+    def test_json_que_no_es_un_objeto_devuelve_error_general(self):
+        respuesta = self.crear([1, 2, 3])
+
+        self.assertEqual(respuesta.status_code, 400)
+        self.assertEqual(list(respuesta.json()["errores"]), ["general"])
+
+    def test_sin_token_csrf_se_rechaza(self):
+        cliente = Client(enforce_csrf_checks=True)
+
+        respuesta = cliente.post(
+            "/api/puntos/", data=self.DATOS, content_type="application/json"
+        )
+
+        self.assertEqual(respuesta.status_code, 403)
+        self.assertEqual(Punto.objects.count(), 0)
