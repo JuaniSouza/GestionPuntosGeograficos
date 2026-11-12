@@ -30,7 +30,7 @@ commit → push → marcar acá.
 
 Cada paso arranca por sus tests (caso feliz y casos de error).
 
-- [ ] **3. Listar puntos.** `GET /api/puntos/` devuelve JSON.
+- [x] **3. Listar puntos.** `GET /api/puntos/` devuelve JSON.
 - [ ] **4. Crear punto.** `POST /api/puntos/`, con errores de validación en JSON
   y código 400.
 - [ ] **5. Editar punto.** `PUT /api/puntos/<id>/`, con 404 si no existe.

@@ -67,3 +67,50 @@ class PuntoModelTests(TestCase):
                 with self.assertRaises(ValidationError) as error:
                     punto_valido(longitud=Decimal(longitud)).full_clean()
                 self.assertIn("longitud", error.exception.message_dict)
+
+
+class ListarPuntosApiTests(TestCase):
+    # self.client simula un navegador: hace pedidos a las URLs sin levantar
+    # un servidor. Cada test usa una base de datos de prueba vacía.
+
+    def test_sin_puntos_devuelve_una_lista_vacia(self):
+        respuesta = self.client.get("/api/puntos/")
+
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertEqual(respuesta.json(), {"puntos": []})
+
+    def test_devuelve_los_datos_de_cada_punto(self):
+        punto = punto_valido(estado=Punto.Estado.INACTIVO)
+        punto.save()
+
+        respuesta = self.client.get("/api/puntos/")
+
+        self.assertEqual(
+            respuesta.json(),
+            {
+                "puntos": [
+                    {
+                        "id": punto.id,
+                        "nombre": "Obelisco",
+                        "descripcion": "Monumento histórico de Buenos Aires",
+                        "latitud": -34.603722,
+                        "longitud": -58.381592,
+                        "estado": "inactivo",
+                    }
+                ]
+            },
+        )
+
+    def test_los_puntos_vienen_ordenados_por_nombre(self):
+        punto_valido(nombre="Zoológico").save()
+        punto_valido(nombre="Aeroparque").save()
+
+        respuesta = self.client.get("/api/puntos/")
+
+        nombres = [punto["nombre"] for punto in respuesta.json()["puntos"]]
+        self.assertEqual(nombres, ["Aeroparque", "Zoológico"])
+
+    def test_rechaza_verbos_no_soportados(self):
+        respuesta = self.client.delete("/api/puntos/")
+
+        self.assertEqual(respuesta.status_code, 405)
