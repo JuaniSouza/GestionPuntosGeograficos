@@ -22,6 +22,12 @@
         "source": "github",
         "repo": "dietrichgebert/ponytail"
       }
+    },
+    "claude-code-workflows": {
+      "source": {
+        "source": "github",
+        "repo": "wshobson/agents"
+      }
     }
   }
 }
