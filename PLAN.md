@@ -23,54 +23,64 @@ commit → push → marcar acá.
   *Listo cuando:* `python manage.py check` pasa y el servidor levanta.
 - [ ] **2. Modelo `Punto`.** Nombre, descripción, latitud, longitud, estado
   (Activo / Inactivo), con validadores de rango, migración y registro en el admin.
-  *Listo cuando:* la migración aplica y se puede crear un punto desde el admin.
-- [ ] **3. Tests del modelo.** Coordenadas válidas, fuera de rango y en los bordes.
-  *Listo cuando:* `python manage.py test` pasa.
+  Tests primero: coordenadas válidas, fuera de rango y en los bordes.
+  *Listo cuando:* los tests pasan y se puede crear un punto desde el admin.
 
 ## Etapa 2 — API (backend)
 
-- [ ] **4. Listar puntos.** `GET /api/puntos/` devuelve JSON.
-- [ ] **5. Crear punto.** `POST /api/puntos/`, con errores de validación en JSON
+Cada paso arranca por sus tests (caso feliz y casos de error).
+
+- [ ] **3. Listar puntos.** `GET /api/puntos/` devuelve JSON.
+- [ ] **4. Crear punto.** `POST /api/puntos/`, con errores de validación en JSON
   y código 400.
-- [ ] **6. Editar y eliminar.** `PUT` y `DELETE` en `/api/puntos/<id>/`, con 404
-  si no existe.
-- [ ] **7. Tests de la API.** Casos felices y de error de los cuatro verbos.
-  *Listo cuando (4 a 7):* los tests pasan y se probó a mano con `curl`.
+- [ ] **5. Editar punto.** `PUT /api/puntos/<id>/`, con 404 si no existe.
+- [ ] **6. Eliminar punto.** `DELETE /api/puntos/<id>/`, con 404 si no existe.
+  *Listo cuando (3 a 6):* los tests pasan y se probó a mano con `curl`.
 
 ## Etapa 3 — Frontend
 
-- [ ] **8. Página base.** Template, CSS y estructura mapa + tabla (vacíos).
-- [ ] **9. Mapa con puntos.** Leaflet carga los puntos desde la API. Al
+- [ ] **7. Página base.** Template, CSS y estructura mapa + tabla (vacíos).
+- [ ] **8. Mapa con puntos.** Leaflet carga los puntos desde la API. Al
   seleccionar un marcador muestra nombre y descripción. Inactivos en gris.
-- [ ] **10. Tabla.** Nombre, estado, coordenadas y acciones.
-- [ ] **11. Crear desde el mapa.** Click en el mapa abre el formulario con las
+- [ ] **9. Tabla.** Nombre, estado, coordenadas y acciones.
+- [ ] **10. Crear desde el mapa.** Click en el mapa abre el formulario con las
   coordenadas precargadas.
-- [ ] **12. Editar.** Desde la tabla, con el mismo formulario.
-- [ ] **13. Eliminar.** Con confirmación.
-- [ ] **14. Validación y errores en pantalla.** Validación en el navegador y
+- [ ] **11. Editar.** Desde la tabla, con el mismo formulario.
+- [ ] **12. Eliminar.** Con confirmación.
+- [ ] **13. Validación y errores en pantalla.** Validación en el navegador y
   mensajes de error del backend junto a cada campo.
-  *Listo cuando (8 a 14):* se probó cada flujo en el navegador.
+  *Listo cuando (7 a 13):* se probó cada flujo en el navegador.
 
 ## Etapa 4 — Datos y Docker
 
-- [ ] **15. Datos de ejemplo.** Fixture y carga automática que no duplica.
-- [ ] **16. Dockerfile.**
-- [ ] **17. docker-compose.yml.** Volumen para SQLite y arranque que migra y
+- [ ] **14. Datos de ejemplo.** Fixture y carga automática que no duplica.
+- [ ] **15. Dockerfile.**
+- [ ] **16. docker-compose.yml.** Volumen para SQLite y arranque que migra y
   carga los datos solo.
   *Listo cuando:* `docker compose up --build` levanta todo sin pasos manuales.
-- [ ] **18. Prueba de persistencia.** Crear un punto, `docker compose down`,
+- [ ] **17. Prueba de persistencia.** Crear un punto, `docker compose down`,
   `up`, y el punto sigue ahí.
 
 ## Etapa 5 — Entrega
 
-- [ ] **19. README.** Instrucciones de ejecución, estructura, decisiones técnicas
+- [ ] **18. README.** Instrucciones de ejecución, estructura, decisiones técnicas
   y endpoints.
-- [ ] **20. Repaso final.** Revisión completa del código y guion para la defensa.
+- [ ] **19. Repaso final.** Revisión completa del código y guion para la defensa.
 
-## Skills del proyecto
+## Skills
 
-| Skill | Se usa | Dónde |
-|---|---|---|
-| `api-design-principles` | Sí | Pasos 4 a 7: URLs, verbos y códigos HTTP. |
-| `error-handling-patterns` | Sí | Pasos 5, 6 y 14: formato y manejo de errores. |
-| `prompt-engineering-patterns` | No | La aplicación no usa modelos de lenguaje. |
+Antes de cada paso se revisa esta tabla y se carga la skill que corresponda.
+
+| Skill | Dónde se usa |
+|---|---|
+| `superpowers:test-driven-development` | Pasos 2 a 6: el test se escribe antes que el código. |
+| `api-design-principles` | Pasos 3 a 6: URLs, verbos y códigos HTTP. |
+| `error-handling-patterns` | Pasos 4 a 6 y 13: formato y manejo de errores. |
+| `frontend-design:frontend-design` | Pasos 7 a 13: diseño de la pantalla, mapa, tabla y formulario. |
+| `superpowers:systematic-debugging` | Cuando aparezca un bug o un test falle sin causa clara. |
+| `superpowers:verification-before-completion` | Al cerrar cada paso, antes de marcarlo `[x]` y commitear. |
+| `superpowers:requesting-code-review` | Paso 19: repaso final del código. |
+
+No se usan: `prompt-engineering-patterns` (la aplicación no usa modelos de
+lenguaje) y las skills de Superpowers de subagentes y worktrees (el trabajo es
+secuencial y en una sola rama).
