@@ -21,7 +21,7 @@ commit → push → marcar acá.
 - [x] **1. Esqueleto Django.** `requirements.txt`, `.gitignore`, proyecto
   `config`, app `puntos`, idioma y zona horaria, base en `data/db.sqlite3`.
   *Listo cuando:* `python manage.py check` pasa y el servidor levanta.
-- [ ] **2. Modelo `Punto`.** Nombre, descripción, latitud, longitud, estado
+- [x] **2. Modelo `Punto`.** Nombre, descripción, latitud, longitud, estado
   (Activo / Inactivo), con validadores de rango, migración y registro en el admin.
   Tests primero: coordenadas válidas, fuera de rango y en los bordes.
   *Listo cuando:* los tests pasan y se puede crear un punto desde el admin.
