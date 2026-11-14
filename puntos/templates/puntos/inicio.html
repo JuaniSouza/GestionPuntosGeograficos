@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Puntos geográficos</title>
+  <link rel="stylesheet" href="{% static 'puntos/css/estilos.css' %}">
+</head>
+<body>
+  <header class="encabezado">
+    <h1 class="encabezado__titulo">Puntos geográficos</h1>
+    <p class="encabezado__ayuda">Hacé clic en el mapa para agregar un punto.</p>
+  </header>
+
+  <main class="contenido">
+    <section class="panel panel--mapa" aria-label="Mapa de puntos">
+      <div id="mapa" class="mapa"></div>
+    </section>
+
+    <section class="panel panel--listado" aria-labelledby="titulo-listado">
+      <h2 id="titulo-listado" class="panel__titulo">Listado</h2>
+      <div class="tabla-contenedor">
+        <table id="tabla-puntos" class="tabla">
+          <thead>
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Coordenadas</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-puntos-cuerpo">
+            <tr>
+              <td class="tabla__vacia" colspan="4">Todavía no hay puntos cargados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

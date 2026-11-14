@@ -57,7 +57,7 @@ Cada paso arranca por sus tests (caso feliz y casos de error).
 
 ## Etapa 3 — Frontend
 
-- [ ] **7. Página base.** Template, CSS y estructura mapa + tabla (vacíos).
+- [x] **7. Página base.** Template, CSS y estructura mapa + tabla (vacíos).
 - [ ] **8. Mapa con puntos.** Leaflet carga los puntos desde la API. Al
   seleccionar un marcador muestra nombre y descripción. Inactivos en gris.
 - [ ] **9. Tabla.** Nombre, estado, coordenadas y acciones.

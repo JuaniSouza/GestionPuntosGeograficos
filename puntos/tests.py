@@ -257,3 +257,18 @@ class EliminarPuntoApiTests(TestCase):
         self.assertEqual(respuesta.status_code, 404)
         self.assertEqual(list(respuesta.json()["errores"]), ["general"])
         self.assertEqual(Punto.objects.count(), 1)
+
+
+class PaginaInicioTests(TestCase):
+    def test_muestra_la_pagina_con_el_mapa_y_la_tabla(self):
+        respuesta = self.client.get("/")
+
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertTemplateUsed(respuesta, "puntos/inicio.html")
+        self.assertContains(respuesta, 'id="mapa"')
+        self.assertContains(respuesta, 'id="tabla-puntos"')
+
+    def test_entrega_la_cookie_csrf_que_necesita_la_api(self):
+        respuesta = self.client.get("/")
+
+        self.assertIn("csrftoken", respuesta.cookies)

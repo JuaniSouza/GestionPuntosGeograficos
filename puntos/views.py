@@ -2,13 +2,25 @@ import json
 from http import HTTPStatus
 
 from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
 from django.views import View
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from .forms import PuntoForm
 from .models import Punto
 
 # Clave que agrupa los errores que no pertenecen a un campo en particular.
 ERROR_GENERAL = "general"
+
+
+@ensure_csrf_cookie
+def inicio(request):
+    """La única pantalla: mapa y tabla de puntos.
+
+    ensure_csrf_cookie hace que la respuesta lleve la cookie con el token
+    CSRF, que el JavaScript de la página reenvía en cada pedido a la API.
+    """
+    return render(request, "puntos/inicio.html")
 
 
 class CuerpoInvalido(Exception):

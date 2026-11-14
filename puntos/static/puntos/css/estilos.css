@@ -1,0 +1,135 @@
+/* Colores, tipografía y medidas se definen una vez como variables
+   y el resto de la hoja las reutiliza. Paleta tomada de una carta náutica. */
+:root {
+  --tinta: #12263a;        /* texto principal */
+  --tinta-suave: #51677a;  /* texto secundario */
+  --carta: #e9f0f2;        /* fondo de la página */
+  --superficie: #ffffff;   /* fondo de los paneles */
+  --linea: #cbd8de;        /* bordes y divisores */
+  --agua: #17627d;         /* color de acción y de punto activo */
+  --inactivo: #7d8b96;     /* punto inactivo */
+
+  --fuente: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --espacio: 1rem;
+  --radio: 6px;
+  --alto-encabezado: 3.5rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--carta);
+  color: var(--tinta);
+  font-family: var(--fuente);
+  line-height: 1.45;
+}
+
+/* Encabezado */
+.encabezado {
+  min-height: var(--alto-encabezado);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--espacio);
+  padding: 0.75rem var(--espacio);
+  background: var(--tinta);
+  color: #fff;
+}
+
+.encabezado__titulo {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.encabezado__ayuda {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #b9cbd6;
+}
+
+/* Estructura: mapa a la izquierda y listado a la derecha.
+   En pantallas angostas se apilan (ver la media query del final). */
+.contenido {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: var(--espacio);
+  padding: var(--espacio);
+}
+
+.panel {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  overflow: hidden;
+}
+
+.panel--listado {
+  display: flex;
+  flex-direction: column;
+}
+
+.panel__titulo {
+  margin: 0;
+  padding: 0.75rem var(--espacio);
+  font-size: 1rem;
+  font-weight: 650;
+  border-bottom: 1px solid var(--linea);
+}
+
+.mapa {
+  height: 100%;
+  min-height: 24rem;
+  background: #d4e3e8;
+}
+
+/* Tabla */
+.tabla-contenedor {
+  overflow: auto;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tabla th,
+.tabla td {
+  padding: 0.6rem var(--espacio);
+  text-align: left;
+  border-bottom: 1px solid var(--linea);
+}
+
+.tabla th {
+  font-weight: 600;
+  color: var(--tinta-suave);
+  white-space: nowrap;
+}
+
+.tabla .tabla__vacia {
+  padding: 2rem var(--espacio);
+  text-align: center;
+  color: var(--tinta-suave);
+  border-bottom: 0;
+}
+
+@media (max-width: 800px) {
+  .contenido {
+    grid-template-columns: 1fr;
+  }
+
+  .mapa {
+    height: 55vh;
+  }
+}
