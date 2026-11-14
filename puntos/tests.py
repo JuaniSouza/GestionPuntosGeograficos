@@ -228,3 +228,32 @@ class EditarPuntoApiTests(TestCase):
 
         self.assertEqual(respuesta.status_code, 404)
         self.assertEqual(list(respuesta.json()["errores"]), ["general"])
+
+
+class EliminarPuntoApiTests(TestCase):
+    def setUp(self):
+        self.punto = punto_valido()
+        self.punto.save()
+
+    def test_elimina_el_punto(self):
+        respuesta = self.client.delete(f"/api/puntos/{self.punto.id}/")
+
+        # 204 = salió bien y no hay contenido para devolver.
+        self.assertEqual(respuesta.status_code, 204)
+        self.assertEqual(respuesta.content, b"")
+        self.assertEqual(Punto.objects.count(), 0)
+
+    def test_solo_elimina_el_punto_pedido(self):
+        otro = punto_valido(nombre="Cabildo")
+        otro.save()
+
+        self.client.delete(f"/api/puntos/{self.punto.id}/")
+
+        self.assertEqual(list(Punto.objects.all()), [otro])
+
+    def test_punto_inexistente_devuelve_404(self):
+        respuesta = self.client.delete(f"/api/puntos/{self.punto.id + 1}/")
+
+        self.assertEqual(respuesta.status_code, 404)
+        self.assertEqual(list(respuesta.json()["errores"]), ["general"])
+        self.assertEqual(Punto.objects.count(), 1)

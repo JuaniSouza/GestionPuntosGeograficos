@@ -1,7 +1,7 @@
 import json
 from http import HTTPStatus
 
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.views import View
 
 from .forms import PuntoForm
@@ -82,10 +82,19 @@ class PuntosView(View):
 class PuntoDetalleView(View):
     """/api/puntos/<id>/ — un punto en particular."""
 
-    def put(self, request, punto_id):
-        punto = Punto.objects.filter(pk=punto_id).first()
-        if punto is None:
+    def dispatch(self, request, punto_id):
+        # dispatch corre antes que put() o delete(). Buscar el punto acá evita
+        # repetir la búsqueda y el 404 en cada método.
+        self.punto = Punto.objects.filter(pk=punto_id).first()
+        if self.punto is None:
             return respuesta_errores(
                 {ERROR_GENERAL: ["El punto no existe."]}, HTTPStatus.NOT_FOUND
             )
-        return guardar_punto(request, punto)
+        return super().dispatch(request)
+
+    def put(self, request):
+        return guardar_punto(request, self.punto)
+
+    def delete(self, request):
+        self.punto.delete()
+        return HttpResponse(status=HTTPStatus.NO_CONTENT)
