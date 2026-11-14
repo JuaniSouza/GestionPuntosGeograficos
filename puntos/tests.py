@@ -268,6 +268,12 @@ class PaginaInicioTests(TestCase):
         self.assertContains(respuesta, 'id="mapa"')
         self.assertContains(respuesta, 'id="tabla-puntos"')
 
+    def test_carga_leaflet_y_el_javascript_de_la_pagina(self):
+        respuesta = self.client.get("/")
+
+        self.assertContains(respuesta, "puntos/vendor/leaflet/leaflet.js")
+        self.assertContains(respuesta, "puntos/js/app.js")
+
     def test_entrega_la_cookie_csrf_que_necesita_la_api(self):
         respuesta = self.client.get("/")
 

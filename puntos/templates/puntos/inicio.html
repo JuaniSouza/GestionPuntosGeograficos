@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Puntos geográficos</title>
+  <link rel="stylesheet" href="{% static 'puntos/vendor/leaflet/leaflet.css' %}">
   <link rel="stylesheet" href="{% static 'puntos/css/estilos.css' %}">
 </head>
 <body>
@@ -12,6 +13,8 @@
     <h1 class="encabezado__titulo">Puntos geográficos</h1>
     <p class="encabezado__ayuda">Hacé clic en el mapa para agregar un punto.</p>
   </header>
+
+  <p id="aviso" class="aviso" role="alert" hidden></p>
 
   <main class="contenido">
     <section class="panel panel--mapa" aria-label="Mapa de puntos">
@@ -39,5 +42,8 @@
       </div>
     </section>
   </main>
+
+  <script src="{% static 'puntos/vendor/leaflet/leaflet.js' %}"></script>
+  <script type="module" src="{% static 'puntos/js/app.js' %}"></script>
 </body>
 </html>

@@ -8,6 +8,8 @@
   --linea: #cbd8de;        /* bordes y divisores */
   --agua: #17627d;         /* color de acción y de punto activo */
   --inactivo: #7d8b96;     /* punto inactivo */
+  --error: #a3261c;        /* texto de errores */
+  --error-fondo: #fbeceb;  /* fondo de errores */
 
   --fuente: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --espacio: 1rem;
@@ -91,6 +93,40 @@ body {
   height: 100%;
   min-height: 24rem;
   background: #d4e3e8;
+}
+
+/* Marcadores del mapa: un círculo cuyo color depende del estado del punto. */
+.marcador {
+  border: 3px solid var(--superficie);
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgb(18 38 58 / 0.5);
+}
+
+.marcador--activo {
+  background: var(--agua);
+}
+
+.marcador--inactivo {
+  background: var(--inactivo);
+}
+
+.popup__nombre {
+  font-size: 0.95rem;
+}
+
+.popup__descripcion {
+  margin: 0.25rem 0 0;
+  color: var(--tinta-suave);
+}
+
+/* Aviso de error general */
+.aviso {
+  margin: var(--espacio) var(--espacio) 0;
+  padding: 0.6rem var(--espacio);
+  background: var(--error-fondo);
+  color: var(--error);
+  border: 1px solid currentColor;
+  border-radius: var(--radio);
 }
 
 /* Tabla */
