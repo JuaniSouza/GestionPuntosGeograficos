@@ -40,9 +40,28 @@ def leer_json(request):
     return datos
 
 
-def respuesta_errores(errores):
-    """Respuesta 400 con el formato único de errores: {"errores": {campo: [mensajes]}}."""
-    return JsonResponse({"errores": errores}, status=HTTPStatus.BAD_REQUEST)
+def respuesta_errores(errores, estado=HTTPStatus.BAD_REQUEST):
+    """Respuesta de error con formato único: {"errores": {campo: [mensajes]}}."""
+    return JsonResponse({"errores": errores}, status=estado)
+
+
+def guardar_punto(request, punto=None, estado_ok=HTTPStatus.OK):
+    """Valida el JSON del pedido y crea un punto o actualiza el recibido.
+
+    Crear y editar comparten todo este recorrido; solo cambia si hay un punto
+    existente y el código de la respuesta.
+    """
+    try:
+        datos = leer_json(request)
+    except CuerpoInvalido as error:
+        return respuesta_errores({ERROR_GENERAL: [str(error)]})
+
+    formulario = PuntoForm(datos, instance=punto)
+    if not formulario.is_valid():
+        return respuesta_errores(formulario.errors)
+
+    punto = formulario.save()
+    return JsonResponse({"punto": punto_a_dict(punto)}, status=estado_ok)
 
 
 class PuntosView(View):
@@ -57,14 +76,16 @@ class PuntosView(View):
         return JsonResponse({"puntos": puntos})
 
     def post(self, request):
-        try:
-            datos = leer_json(request)
-        except CuerpoInvalido as error:
-            return respuesta_errores({ERROR_GENERAL: [str(error)]})
+        return guardar_punto(request, estado_ok=HTTPStatus.CREATED)
 
-        formulario = PuntoForm(datos)
-        if not formulario.is_valid():
-            return respuesta_errores(formulario.errors)
 
-        punto = formulario.save()
-        return JsonResponse({"punto": punto_a_dict(punto)}, status=HTTPStatus.CREATED)
+class PuntoDetalleView(View):
+    """/api/puntos/<id>/ — un punto en particular."""
+
+    def put(self, request, punto_id):
+        punto = Punto.objects.filter(pk=punto_id).first()
+        if punto is None:
+            return respuesta_errores(
+                {ERROR_GENERAL: ["El punto no existe."]}, HTTPStatus.NOT_FOUND
+            )
+        return guardar_punto(request, punto)

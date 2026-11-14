@@ -51,7 +51,7 @@ Cada paso arranca por sus tests (caso feliz y casos de error).
 - [x] **3. Listar puntos.** `GET /api/puntos/` devuelve JSON.
 - [x] **4. Crear punto.** `POST /api/puntos/`, con errores de validación en JSON
   y código 400.
-- [ ] **5. Editar punto.** `PUT /api/puntos/<id>/`, con 404 si no existe.
+- [x] **5. Editar punto.** `PUT /api/puntos/<id>/`, con 404 si no existe.
 - [ ] **6. Eliminar punto.** `DELETE /api/puntos/<id>/`, con 404 si no existe.
   *Listo cuando (3 a 6):* los tests pasan y se probó a mano con `curl`.
 

@@ -176,3 +176,55 @@ class CrearPuntoApiTests(TestCase):
 
         self.assertEqual(respuesta.status_code, 403)
         self.assertEqual(Punto.objects.count(), 0)
+
+
+class EditarPuntoApiTests(TestCase):
+    NUEVOS_DATOS = {
+        "nombre": "Obelisco de Buenos Aires",
+        "descripcion": "Av. 9 de Julio y Corrientes",
+        "latitud": -34.6,
+        "longitud": -58.38,
+        "estado": "inactivo",
+    }
+
+    def setUp(self):
+        # setUp corre antes de cada test: todos arrancan con un punto guardado.
+        self.punto = punto_valido()
+        self.punto.save()
+
+    def editar(self, punto_id, datos):
+        return self.client.put(
+            f"/api/puntos/{punto_id}/", data=datos, content_type="application/json"
+        )
+
+    def test_edita_el_punto_y_lo_devuelve(self):
+        respuesta = self.editar(self.punto.id, self.NUEVOS_DATOS)
+
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertEqual(
+            respuesta.json(), {"punto": {"id": self.punto.id, **self.NUEVOS_DATOS}}
+        )
+        self.punto.refresh_from_db()
+        self.assertEqual(self.punto.nombre, "Obelisco de Buenos Aires")
+        self.assertEqual(self.punto.estado, Punto.Estado.INACTIVO)
+        self.assertEqual(Punto.objects.count(), 1)
+
+    def test_datos_invalidos_no_modifican_el_punto(self):
+        respuesta = self.editar(self.punto.id, {**self.NUEVOS_DATOS, "longitud": 500})
+
+        self.assertEqual(respuesta.status_code, 400)
+        self.assertEqual(list(respuesta.json()["errores"]), ["longitud"])
+        self.punto.refresh_from_db()
+        self.assertEqual(self.punto.nombre, "Obelisco")
+
+    def test_json_mal_formado_devuelve_error_general(self):
+        respuesta = self.editar(self.punto.id, "{esto no es json")
+
+        self.assertEqual(respuesta.status_code, 400)
+        self.assertEqual(list(respuesta.json()["errores"]), ["general"])
+
+    def test_punto_inexistente_devuelve_404(self):
+        respuesta = self.editar(self.punto.id + 1, self.NUEVOS_DATOS)
+
+        self.assertEqual(respuesta.status_code, 404)
+        self.assertEqual(list(respuesta.json()["errores"]), ["general"])
