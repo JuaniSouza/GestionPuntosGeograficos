@@ -20,3 +20,25 @@ Solución: la capa de teselas se crea con
 `puntos/static/puntos/js/config.js`). Solo las imágenes del mapa informan el
 origen de la página (por ejemplo `http://localhost:8000/`, sin la ruta) y el
 resto del sitio conserva la política de Django.
+
+### Servidor dentro del contenedor: desarrollo vs. producción
+
+El contenedor arranca con `python manage.py runserver`, el servidor de
+desarrollo de Django. Se eligió porque el ejercicio corre en una máquina
+local, con un solo usuario, y no suma dependencias ni configuración.
+
+No es adecuado para producción: la documentación de Django lo indica
+expresamente, porque no está pensado para carga real ni auditado en
+seguridad. Para un despliegue real cambiaría lo siguiente:
+
+| | Este ejercicio | Producción |
+|---|---|---|
+| Servidor | `runserver` | Gunicorn (servidor WSGI con varios procesos) |
+| Archivos estáticos (CSS, JS) | Los sirve `runserver` | `collectstatic` + WhiteNoise o un Nginx delante |
+| `DEBUG` | `true` | `false`, para no mostrar detalles internos en los errores |
+| `SECRET_KEY` | Valor de desarrollo | Valor secreto, fuera del repositorio |
+| Base de datos | SQLite en un volumen | PostgreSQL en su propio contenedor |
+
+El cambio está preparado: `SECRET_KEY`, `DEBUG` y `ALLOWED_HOSTS` se leen de
+variables de entorno (`DJANGO_SECRET_KEY`, `DJANGO_DEBUG`,
+`DJANGO_ALLOWED_HOSTS`), así que se configuran sin tocar el código.

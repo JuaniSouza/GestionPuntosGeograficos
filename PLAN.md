@@ -72,7 +72,7 @@ Cada paso arranca por sus tests (caso feliz y casos de error).
 ## Etapa 4 — Datos y Docker
 
 - [x] **14. Datos de ejemplo.** Fixture y carga automática que no duplica.
-- [ ] **15. Dockerfile.**
+- [x] **15. Dockerfile.**
 - [ ] **16. docker-compose.yml.** Volumen para SQLite y arranque que migra y
   carga los datos solo.
   *Listo cuando:* `docker compose up --build` levanta todo sin pasos manuales.
