@@ -8,7 +8,10 @@ import { MAPA } from "./config.js";
  */
 export function crearMapa(idElemento, { alHacerClic }) {
   const mapa = L.map(idElemento).setView(MAPA.centroInicial, MAPA.zoomInicial);
-  L.tileLayer(MAPA.urlTeselas, { attribution: MAPA.atribucion }).addTo(mapa);
+  L.tileLayer(MAPA.urlTeselas, {
+    attribution: MAPA.atribucion,
+    referrerPolicy: MAPA.politicaDeReferencia,
+  }).addTo(mapa);
 
   // Capa que agrupa los marcadores, para poder borrarlos todos juntos.
   const capaMarcadores = L.layerGroup().addTo(mapa);

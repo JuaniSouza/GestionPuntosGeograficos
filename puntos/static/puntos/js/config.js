@@ -23,6 +23,11 @@ export const MAPA = {
   // Margen en píxeles entre los puntos y el borde del mapa al encuadrar.
   margenAlEncuadrar: [40, 40],
   urlTeselas: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+  // OpenStreetMap rechaza (403) los pedidos que no dicen desde qué sitio
+  // vienen. Django, por seguridad, le indica al navegador que no lo informe
+  // a otros sitios; acá se habilita solo para las imágenes del mapa, y se
+  // envía únicamente el origen (http://localhost:8000), no la URL completa.
+  politicaDeReferencia: "strict-origin-when-cross-origin",
   atribucion:
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 };
