@@ -64,6 +64,19 @@
     </form>
   </dialog>
 
+  {# Con method="dialog" los botones cierran la ventana solos, y el value del
+     botón elegido queda disponible para el JavaScript (ver confirmacion.js). #}
+  <dialog id="dialogo-eliminar" class="dialogo" aria-labelledby="eliminar-titulo">
+    <form method="dialog" class="formulario">
+      <h2 id="eliminar-titulo" class="dialogo__titulo">Eliminar punto</h2>
+      <p id="eliminar-mensaje" class="dialogo__mensaje"></p>
+      <div class="formulario__acciones">
+        <button value="cancelar" class="boton">Cancelar</button>
+        <button value="confirmar" class="boton boton--peligro">Eliminar punto</button>
+      </div>
+    </form>
+  </dialog>
+
   {# json_script escribe el diccionario como JSON dentro de la página, de forma segura. #}
   {{ config|json_script:"config-backend" }}
   <script src="{% static 'puntos/vendor/leaflet/leaflet.js' %}"></script>

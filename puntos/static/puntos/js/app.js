@@ -1,10 +1,25 @@
-// Punto de entrada: conecta la API con el mapa, la tabla y el formulario.
+// Punto de entrada: conecta la API con el mapa, la tabla y las ventanas.
 
-import { crearPunto, editarPunto, listarPuntos } from "./api.js";
+import {
+  crearPunto,
+  editarPunto,
+  eliminarPunto,
+  listarPuntos,
+} from "./api.js";
+import { crearConfirmacion } from "./confirmacion.js";
 import { crearFormulario } from "./formulario.js";
 import { crearMapa } from "./mapa.js";
 import { crearTabla } from "./tabla.js";
 
+const MENSAJES = {
+  errorAlCargar:
+    "No se pudieron cargar los puntos. Revisá la conexión y recargá la página.",
+  errorAlEliminar: "No se pudo eliminar el punto. Intentá de nuevo.",
+  confirmarEliminar: (punto) =>
+    `¿Eliminar "${punto.nombre}"? Esta acción no se puede deshacer.`,
+};
+
+const confirmacion = crearConfirmacion();
 const formulario = crearFormulario({
   alGuardar: async (datos, punto) => {
     if (punto) {
@@ -18,10 +33,30 @@ const formulario = crearFormulario({
 const mapa = crearMapa("mapa", { alHacerClic: formulario.abrirParaCrear });
 const tabla = crearTabla({
   alEditar: formulario.abrirParaEditar,
-  // Eliminar se conecta en el paso siguiente.
-  alEliminar: () => {},
+  alEliminar: eliminar,
 });
 const aviso = document.getElementById("aviso");
+
+function mostrarAviso(texto) {
+  aviso.textContent = texto;
+  aviso.hidden = false;
+}
+
+async function eliminar(punto) {
+  const confirmado = await confirmacion.pedir(MENSAJES.confirmarEliminar(punto));
+  if (!confirmado) return;
+
+  let fallo = false;
+  try {
+    await eliminarPunto(punto.id);
+  } catch (error) {
+    console.error(error);
+    fallo = true;
+  }
+  // Se recarga también si falló: si otro ya lo había borrado, desaparece.
+  await cargarPuntos();
+  if (fallo) mostrarAviso(MENSAJES.errorAlEliminar);
+}
 
 /**
  * Trae los puntos del backend y actualiza el mapa y la tabla.
@@ -37,14 +72,12 @@ async function cargarPuntos() {
     return puntos;
   } catch (error) {
     console.error(error);
-    aviso.textContent =
-      "No se pudieron cargar los puntos. Revisá la conexión y recargá la página.";
-    aviso.hidden = false;
+    mostrarAviso(MENSAJES.errorAlCargar);
     return null;
   }
 }
 
 // Solo al abrir la página se acomoda el mapa para mostrar todos los puntos.
-// Después de crear o editar no, para no mover el mapa mientras se está trabajando.
+// Después de cada cambio no, para no mover el mapa mientras se está trabajando.
 const puntosIniciales = await cargarPuntos();
 if (puntosIniciales) mapa.encuadrar(puntosIniciales);

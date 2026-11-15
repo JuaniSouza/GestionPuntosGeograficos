@@ -279,6 +279,11 @@ body {
   font-weight: 650;
 }
 
+.dialogo__mensaje {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
 .aviso--en-formulario {
   margin: 0;
 }

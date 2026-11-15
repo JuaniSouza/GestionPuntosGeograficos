@@ -28,6 +28,11 @@ export async function editarPunto(id, datos) {
   return cuerpo.punto;
 }
 
+/** Elimina un punto. */
+export async function eliminarPunto(id) {
+  await pedir(urlDePunto(id), { metodo: "DELETE" });
+}
+
 function urlDePunto(id) {
   return `${URL_API_PUNTOS}${id}/`;
 }

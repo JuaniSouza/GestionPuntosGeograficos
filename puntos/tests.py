@@ -303,3 +303,8 @@ class PaginaInicioTests(TestCase):
         # Las reglas del modelo llegan al HTML sin volver a escribirlas.
         self.assertContains(respuesta, 'maxlength="100"')
         self.assertContains(respuesta, '<option value="inactivo">Inactivo</option>')
+
+    def test_incluye_la_ventana_para_confirmar_la_eliminacion(self):
+        respuesta = self.client.get("/")
+
+        self.assertContains(respuesta, 'id="dialogo-eliminar"')
