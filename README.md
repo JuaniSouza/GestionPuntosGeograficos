@@ -46,7 +46,7 @@ No hay pasos manuales. Al iniciar, el contenedor:
 docker compose run --rm web python manage.py test
 ```
 
-Son 41 tests que cubren el modelo, la API, la página y la carga de ejemplos.
+Son 42 tests que cubren el modelo, la API, la página y la carga de ejemplos.
 Usan una base de datos temporal, no tocan los datos cargados.
 
 ## Cómo se usa

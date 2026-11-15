@@ -9,6 +9,7 @@ LONGITUD_MIN, LONGITUD_MAX = -180, 180
 COORDENADA_DECIMALES = 6
 # Hasta tres cifras enteras (180) más los decimales.
 COORDENADA_DIGITOS = 3 + COORDENADA_DECIMALES
+NOMBRE_LARGO_MAX = 100
 
 
 class Punto(models.Model):
@@ -19,7 +20,7 @@ class Punto(models.Model):
         ACTIVO = "activo", "Activo"
         INACTIVO = "inactivo", "Inactivo"
 
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=NOMBRE_LARGO_MAX)
     descripcion = models.TextField("descripción", blank=True)
     # DecimalField guarda el número exacto (un float puede arrastrar errores de
     # redondeo).

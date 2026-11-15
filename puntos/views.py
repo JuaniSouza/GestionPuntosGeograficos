@@ -54,7 +54,9 @@ def leer_json(request):
     """Devuelve el cuerpo del pedido como diccionario o lanza CuerpoInvalido."""
     try:
         datos = json.loads(request.body)
-    except json.JSONDecodeError as error:
+    except ValueError as error:
+        # ValueError cubre los dos casos: texto que no es JSON
+        # (JSONDecodeError) y bytes que no son texto (UnicodeDecodeError).
         raise CuerpoInvalido("El cuerpo del pedido no es JSON válido.") from error
     if not isinstance(datos, dict):
         raise CuerpoInvalido("El cuerpo del pedido debe ser un objeto JSON.")

@@ -83,7 +83,7 @@ Cada paso arranca por sus tests (caso feliz y casos de error).
 
 - [x] **18. README.** Instrucciones de ejecución, estructura, decisiones técnicas
   y endpoints.
-- [ ] **19. Repaso final.** Revisión completa del código y guion para la defensa.
+- [x] **19. Repaso final.** Revisión completa del código y guion para la defensa.
 
 ## Skills
 

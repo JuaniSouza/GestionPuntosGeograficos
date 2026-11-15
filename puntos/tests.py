@@ -163,6 +163,13 @@ class CrearPuntoApiTests(TestCase):
         self.assertEqual(respuesta.status_code, 400)
         self.assertEqual(list(respuesta.json()["errores"]), ["general"])
 
+    def test_cuerpo_que_no_es_texto_valido_devuelve_error_general(self):
+        # Bytes que no son UTF-8: no se pueden ni leer como texto.
+        respuesta = self.crear(b"\xff\xfe\xfd")
+
+        self.assertEqual(respuesta.status_code, 400)
+        self.assertEqual(list(respuesta.json()["errores"]), ["general"])
+
     def test_json_que_no_es_un_objeto_devuelve_error_general(self):
         respuesta = self.crear([1, 2, 3])
 
