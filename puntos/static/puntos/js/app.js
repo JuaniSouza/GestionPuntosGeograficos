@@ -1,20 +1,24 @@
 // Punto de entrada: conecta la API con el mapa, la tabla y el formulario.
 
-import { crearPunto, listarPuntos } from "./api.js";
+import { crearPunto, editarPunto, listarPuntos } from "./api.js";
 import { crearFormulario } from "./formulario.js";
 import { crearMapa } from "./mapa.js";
 import { crearTabla } from "./tabla.js";
 
 const formulario = crearFormulario({
-  alGuardar: async (datos) => {
-    await crearPunto(datos);
+  alGuardar: async (datos, punto) => {
+    if (punto) {
+      await editarPunto(punto.id, datos);
+    } else {
+      await crearPunto(datos);
+    }
     await cargarPuntos();
   },
 });
 const mapa = crearMapa("mapa", { alHacerClic: formulario.abrirParaCrear });
 const tabla = crearTabla({
-  // Editar y eliminar se conectan en los pasos siguientes.
-  alEditar: () => {},
+  alEditar: formulario.abrirParaEditar,
+  // Eliminar se conecta en el paso siguiente.
   alEliminar: () => {},
 });
 const aviso = document.getElementById("aviso");
@@ -41,6 +45,6 @@ async function cargarPuntos() {
 }
 
 // Solo al abrir la página se acomoda el mapa para mostrar todos los puntos.
-// Después de crear uno no, para no mover el mapa mientras se está trabajando.
+// Después de crear o editar no, para no mover el mapa mientras se está trabajando.
 const puntosIniciales = await cargarPuntos();
 if (puntosIniciales) mapa.encuadrar(puntosIniciales);

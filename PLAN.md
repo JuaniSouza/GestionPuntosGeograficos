@@ -63,7 +63,7 @@ Cada paso arranca por sus tests (caso feliz y casos de error).
 - [x] **9. Tabla.** Nombre, estado, coordenadas y acciones.
 - [x] **10. Crear desde el mapa.** Click en el mapa abre el formulario con las
   coordenadas precargadas.
-- [ ] **11. Editar.** Desde la tabla, con el mismo formulario.
+- [x] **11. Editar.** Desde la tabla, con el mismo formulario.
 - [ ] **12. Eliminar.** Con confirmación.
 - [ ] **13. Validación y errores en pantalla.** Validación en el navegador y
   mensajes de error del backend junto a cada campo.

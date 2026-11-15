@@ -3,24 +3,30 @@
 
 import { DECIMALES_COORDENADA } from "./config.js";
 
+const TITULOS = { crear: "Nuevo punto", editar: "Editar punto" };
 const MENSAJE_ERROR =
   "No se pudo guardar el punto. Revisá los datos e intentá de nuevo.";
 
 /**
  * Prepara el formulario y devuelve sus operaciones.
- * alGuardar recibe los datos cargados y devuelve una promesa: si falla,
- * el formulario queda abierto y muestra el error.
+ * alGuardar recibe los datos cargados y el punto que se está editando (null
+ * si es uno nuevo). Devuelve una promesa: si falla, el formulario queda
+ * abierto y muestra el error.
  */
 export function crearFormulario({ alGuardar }) {
   const dialogo = document.getElementById("dialogo-punto");
   const formulario = document.getElementById("formulario-punto");
+  const titulo = document.getElementById("dialogo-titulo");
   const error = document.getElementById("formulario-error");
   const botonGuardar = document.getElementById("formulario-guardar");
   const botonCancelar = document.getElementById("formulario-cancelar");
 
+  // El punto que se está editando, o null cuando se crea uno nuevo.
+  let puntoEnEdicion = null;
+
   /** Abre el formulario vacío, con las coordenadas ya cargadas. */
   function abrirParaCrear({ latitud, longitud }) {
-    abrir({
+    abrir(TITULOS.crear, null, {
       // El backend acepta hasta DECIMALES_COORDENADA decimales y un clic en
       // el mapa trae muchos más: se redondea antes de mostrarlo.
       latitud: latitud.toFixed(DECIMALES_COORDENADA),
@@ -28,7 +34,16 @@ export function crearFormulario({ alGuardar }) {
     });
   }
 
-  function abrir(valores) {
+  /** Abre el formulario con los datos actuales del punto. */
+  function abrirParaEditar(punto) {
+    // Se separa el id: no es un campo del formulario, viaja en la URL.
+    const { id, ...valores } = punto;
+    abrir(TITULOS.editar, punto, valores);
+  }
+
+  function abrir(textoTitulo, punto, valores) {
+    titulo.textContent = textoTitulo;
+    puntoEnEdicion = punto;
     formulario.reset();
     for (const [campo, valor] of Object.entries(valores)) {
       formulario.elements[campo].value = valor;
@@ -47,7 +62,7 @@ export function crearFormulario({ alGuardar }) {
 
     botonGuardar.disabled = true;
     try {
-      await alGuardar(datos);
+      await alGuardar(datos, puntoEnEdicion);
       dialogo.close();
     } catch (fallo) {
       console.error(fallo);
@@ -58,5 +73,5 @@ export function crearFormulario({ alGuardar }) {
     }
   });
 
-  return { abrirParaCrear };
+  return { abrirParaCrear, abrirParaEditar };
 }

@@ -22,6 +22,16 @@ export async function crearPunto(datos) {
   return cuerpo.punto;
 }
 
+/** Reemplaza los datos de un punto y devuelve el punto guardado. */
+export async function editarPunto(id, datos) {
+  const cuerpo = await pedir(urlDePunto(id), { metodo: "PUT", datos });
+  return cuerpo.punto;
+}
+
+function urlDePunto(id) {
+  return `${URL_API_PUNTOS}${id}/`;
+}
+
 /**
  * Hace un pedido a la API y devuelve el JSON de la respuesta.
  * Si el backend responde con un error, lanza ErrorDeApi.
