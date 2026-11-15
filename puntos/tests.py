@@ -1,6 +1,8 @@
 from decimal import Decimal
+from io import StringIO
 
 from django.core.exceptions import ValidationError
+from django.core.management import call_command
 from django.test import Client, TestCase
 
 from .models import LATITUD_MAX, LATITUD_MIN, LONGITUD_MAX, LONGITUD_MIN, Punto
@@ -339,3 +341,46 @@ class PaginaInicioTests(TestCase):
         for campo in ("nombre", "descripcion", "latitud", "longitud", "estado"):
             with self.subTest(campo=campo):
                 self.assertContains(respuesta, f'id="error-{campo}"')
+
+
+class CargarEjemplosTests(TestCase):
+    # call_command ejecuta un comando de manage.py desde el código.
+    # stdout=StringIO() guarda lo que el comando imprime, para no ensuciar
+    # la salida de los tests.
+
+    def cargar(self):
+        call_command("cargar_ejemplos", stdout=StringIO())
+
+    def test_con_la_base_vacia_carga_los_puntos_de_ejemplo(self):
+        self.cargar()
+
+        self.assertGreater(Punto.objects.count(), 0)
+
+    def test_los_ejemplos_incluyen_los_dos_estados(self):
+        self.cargar()
+
+        estados = set(Punto.objects.values_list("estado", flat=True))
+        self.assertEqual(estados, set(Punto.Estado.values))
+
+    def test_los_ejemplos_cumplen_las_reglas_del_modelo(self):
+        # Cargar un fixture no ejecuta las validaciones: se comprueban acá.
+        self.cargar()
+
+        for punto in Punto.objects.all():
+            with self.subTest(punto=punto.nombre):
+                punto.full_clean()
+
+    def test_ejecutarlo_dos_veces_no_duplica(self):
+        self.cargar()
+        cantidad = Punto.objects.count()
+
+        self.cargar()
+
+        self.assertEqual(Punto.objects.count(), cantidad)
+
+    def test_si_ya_hay_puntos_no_agrega_nada(self):
+        punto_valido().save()
+
+        self.cargar()
+
+        self.assertEqual(list(Punto.objects.values_list("nombre", flat=True)), ["Obelisco"])

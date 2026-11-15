@@ -71,7 +71,7 @@ Cada paso arranca por sus tests (caso feliz y casos de error).
 
 ## Etapa 4 — Datos y Docker
 
-- [ ] **14. Datos de ejemplo.** Fixture y carga automática que no duplica.
+- [x] **14. Datos de ejemplo.** Fixture y carga automática que no duplica.
 - [ ] **15. Dockerfile.**
 - [ ] **16. docker-compose.yml.** Volumen para SQLite y arranque que migra y
   carga los datos solo.
