@@ -65,7 +65,7 @@ Cada paso arranca por sus tests (caso feliz y casos de error).
   coordenadas precargadas.
 - [x] **11. Editar.** Desde la tabla, con el mismo formulario.
 - [x] **12. Eliminar.** Con confirmación.
-- [ ] **13. Validación y errores en pantalla.** Validación en el navegador y
+- [x] **13. Validación y errores en pantalla.** Validación en el navegador y
   mensajes de error del backend junto a cada campo.
   *Listo cuando (7 a 13):* se probó cada flujo en el navegador.
 

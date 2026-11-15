@@ -42,6 +42,8 @@
 
   {# <dialog> es la ventana modal nativa del navegador. Se abre desde formulario.js. #}
   <dialog id="dialogo-punto" class="dialogo" aria-labelledby="dialogo-titulo">
+    {# novalidate apaga los globos de error del navegador: los mensajes los #}
+    {# muestra formulario.js junto a cada campo, con las mismas reglas. #}
     <form id="formulario-punto" class="formulario" novalidate>
       <h2 id="dialogo-titulo" class="dialogo__titulo">Nuevo punto</h2>
 
@@ -53,6 +55,7 @@
           <div class="campo campo--{{ campo.name }}">
             {{ campo.label_tag }}
             {{ campo }}
+            <p id="error-{{ campo.name }}" class="campo__error" hidden></p>
           </div>
         {% endfor %}
       </div>

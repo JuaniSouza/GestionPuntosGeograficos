@@ -324,6 +324,18 @@ body {
   border-radius: var(--radio);
 }
 
+/* aria-invalid lo pone formulario.js en los campos con error. */
+.campo [aria-invalid="true"] {
+  border-color: var(--error);
+  background: var(--error-fondo);
+}
+
+.campo__error {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--error);
+}
+
 .campo textarea {
   resize: vertical;
 }

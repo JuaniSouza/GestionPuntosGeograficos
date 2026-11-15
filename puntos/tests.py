@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.test import Client, TestCase
 
-from .models import Punto
+from .models import LATITUD_MAX, LATITUD_MIN, LONGITUD_MAX, LONGITUD_MIN, Punto
 
 
 def punto_valido(**cambios):
@@ -314,3 +314,28 @@ class PaginaInicioTests(TestCase):
         respuesta = self.client.get("/")
 
         self.assertNotContains(respuesta, "{#")
+
+    def test_el_navegador_recibe_los_limites_de_las_coordenadas(self):
+        respuesta = self.client.get("/")
+
+        formulario = respuesta.context["formulario"]
+        self.assertEqual(
+            {
+                campo: (formulario.fields[campo].widget.attrs["min"],
+                        formulario.fields[campo].widget.attrs["max"])
+                for campo in ("latitud", "longitud")
+            },
+            {
+                "latitud": (LATITUD_MIN, LATITUD_MAX),
+                "longitud": (LONGITUD_MIN, LONGITUD_MAX),
+            },
+        )
+        self.assertContains(respuesta, 'min="-90"')
+        self.assertContains(respuesta, 'max="180"')
+
+    def test_cada_campo_tiene_lugar_para_su_mensaje_de_error(self):
+        respuesta = self.client.get("/")
+
+        for campo in ("nombre", "descripcion", "latitud", "longitud", "estado"):
+            with self.subTest(campo=campo):
+                self.assertContains(respuesta, f'id="error-{campo}"')

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Punto
+from .models import LATITUD_MAX, LATITUD_MIN, LONGITUD_MAX, LONGITUD_MIN, Punto
 
 
 class PuntoForm(forms.ModelForm):
@@ -15,6 +15,13 @@ class PuntoForm(forms.ModelForm):
     """
 
     FILAS_DESCRIPCION = 3
+    # Límites que se escriben en el HTML (atributos min y max) para que el
+    # navegador avise antes de enviar. Son las mismas constantes que valida
+    # el modelo; acá no se valida nada de nuevo.
+    LIMITES = {
+        "latitud": {"min": LATITUD_MIN, "max": LATITUD_MAX},
+        "longitud": {"min": LONGITUD_MIN, "max": LONGITUD_MAX},
+    }
 
     class Meta:
         model = Punto
@@ -23,3 +30,5 @@ class PuntoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["descripcion"].widget.attrs["rows"] = self.FILAS_DESCRIPCION
+        for campo, limites in self.LIMITES.items():
+            self.fields[campo].widget.attrs.update(limites)
