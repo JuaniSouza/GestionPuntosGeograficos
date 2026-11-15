@@ -2,6 +2,14 @@
 
 export const URL_API_PUNTOS = "/api/puntos/";
 
+// Datos que define el backend (ver la vista inicio) y llegan escritos en la
+// página como JSON: los nombres de los estados y la precisión de las coordenadas.
+const configBackend = JSON.parse(
+  document.getElementById("config-backend").textContent
+);
+export const ESTADOS = configBackend.estados;
+export const DECIMALES_COORDENADA = configBackend.decimales_coordenada;
+
 export const MAPA = {
   // Vista inicial cuando todavía no hay puntos: Argentina completa.
   centroInicial: [-38.4, -63.6],

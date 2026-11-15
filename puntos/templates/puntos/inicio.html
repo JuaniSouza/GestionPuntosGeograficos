@@ -29,20 +29,19 @@
             <tr>
               <th scope="col">Nombre</th>
               <th scope="col">Estado</th>
-              <th scope="col">Coordenadas</th>
+              <th scope="col" class="tabla__coordenadas">Coordenadas</th>
               <th scope="col">Acciones</th>
             </tr>
           </thead>
-          <tbody id="tabla-puntos-cuerpo">
-            <tr>
-              <td class="tabla__vacia" colspan="4">Todavía no hay puntos cargados.</td>
-            </tr>
-          </tbody>
+          <tbody id="tabla-puntos-cuerpo"></tbody>
         </table>
+        <p id="listado-vacio" class="listado-vacio" hidden>Todavía no hay puntos cargados.</p>
       </div>
     </section>
   </main>
 
+  {# json_script escribe el diccionario como JSON dentro de la página, de forma segura. #}
+  {{ config|json_script:"config-backend" }}
   <script src="{% static 'puntos/vendor/leaflet/leaflet.js' %}"></script>
   <script type="module" src="{% static 'puntos/js/app.js' %}"></script>
 </body>

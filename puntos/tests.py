@@ -278,3 +278,15 @@ class PaginaInicioTests(TestCase):
         respuesta = self.client.get("/")
 
         self.assertIn("csrftoken", respuesta.cookies)
+
+    def test_entrega_al_javascript_los_datos_que_definio_el_modelo(self):
+        respuesta = self.client.get("/")
+
+        self.assertEqual(
+            respuesta.context["config"],
+            {
+                "estados": {"activo": "Activo", "inactivo": "Inactivo"},
+                "decimales_coordenada": 6,
+            },
+        )
+        self.assertContains(respuesta, 'id="config-backend"')

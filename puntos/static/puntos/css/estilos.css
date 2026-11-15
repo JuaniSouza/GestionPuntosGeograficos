@@ -10,6 +10,7 @@
   --inactivo: #7d8b96;     /* punto inactivo */
   --error: #a3261c;        /* texto de errores */
   --error-fondo: #fbeceb;  /* fondo de errores */
+  --foco: #f0a500;         /* contorno del elemento con foco de teclado */
 
   --fuente: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --espacio: 1rem;
@@ -64,7 +65,7 @@ body {
 .contenido {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--espacio);
   padding: var(--espacio);
 }
@@ -100,15 +101,9 @@ body {
   border: 3px solid var(--superficie);
   border-radius: 50%;
   box-shadow: 0 1px 4px rgb(18 38 58 / 0.5);
+  background: var(--color-estado);
 }
 
-.marcador--activo {
-  background: var(--agua);
-}
-
-.marcador--inactivo {
-  background: var(--inactivo);
-}
 
 .popup__nombre {
   font-size: 0.95rem;
@@ -142,7 +137,7 @@ body {
 
 .tabla th,
 .tabla td {
-  padding: 0.6rem var(--espacio);
+  padding: 0.6rem 0.75rem;
   text-align: left;
   border-bottom: 1px solid var(--linea);
 }
@@ -153,19 +148,105 @@ body {
   white-space: nowrap;
 }
 
-.tabla .tabla__vacia {
+.tabla td:first-child {
+  /* Un nombre largo sin espacios se corta en vez de ensanchar la tabla. */
+  overflow-wrap: anywhere;
+}
+
+.tabla tbody tr:hover {
+  background: var(--carta);
+}
+
+.tabla__coordenadas {
+  /* Cifras del mismo ancho, para que las coordenadas queden alineadas. */
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.listado-vacio {
+  margin: 0;
   padding: 2rem var(--espacio);
   text-align: center;
   color: var(--tinta-suave);
-  border-bottom: 0;
 }
 
-@media (max-width: 800px) {
+/* Estado: un círculo del mismo color que el marcador del mapa, más el texto. */
+.estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.estado::before {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--color-estado);
+}
+
+.marcador--activo,
+.estado--activo {
+  --color-estado: var(--agua);
+}
+
+.marcador--inactivo,
+.estado--inactivo {
+  --color-estado: var(--inactivo);
+}
+
+/* Botones */
+.acciones {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.boton {
+  padding: 0.3rem 0.7rem;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--agua);
+  background: var(--superficie);
+  border: 1px solid currentColor;
+  border-radius: var(--radio);
+  cursor: pointer;
+}
+
+.boton:hover {
+  color: var(--superficie);
+  background: var(--agua);
+  border-color: var(--agua);
+}
+
+.boton--peligro {
+  color: var(--error);
+}
+
+.boton--peligro:hover {
+  background: var(--error);
+  border-color: var(--error);
+}
+
+.boton:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1000px) {
   .contenido {
     grid-template-columns: 1fr;
   }
 
   .mapa {
     height: 55vh;
+  }
+}
+
+@media (max-width: 480px) {
+  /* En el celular los botones se apilan para que la tabla entre a lo ancho. */
+  .acciones {
+    flex-direction: column;
   }
 }

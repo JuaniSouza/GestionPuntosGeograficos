@@ -7,7 +7,7 @@ from django.views import View
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from .forms import PuntoForm
-from .models import Punto
+from .models import COORDENADA_DECIMALES, Punto
 
 # Clave que agrupa los errores que no pertenecen a un campo en particular.
 ERROR_GENERAL = "general"
@@ -20,7 +20,13 @@ def inicio(request):
     ensure_csrf_cookie hace que la respuesta lleve la cookie con el token
     CSRF, que el JavaScript de la página reenvía en cada pedido a la API.
     """
-    return render(request, "puntos/inicio.html")
+    config = {
+        # Datos que ya define el modelo y que el JavaScript necesita. Se los
+        # pasamos desde acá para no volver a escribirlos en el frontend.
+        "estados": dict(Punto.Estado.choices),
+        "decimales_coordenada": COORDENADA_DECIMALES,
+    }
+    return render(request, "puntos/inicio.html", {"config": config})
 
 
 class CuerpoInvalido(Exception):
