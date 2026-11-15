@@ -1,0 +1,82 @@
+[
+  {
+    "model": "puntos.punto",
+    "fields": {
+      "nombre": "Puerto de Buenos Aires",
+      "descripcion": "Terminales de carga y de cruceros sobre el Río de la Plata.",
+      "latitud": "-34.583600",
+      "longitud": "-58.365300",
+      "estado": "activo"
+    }
+  },
+  {
+    "model": "puntos.punto",
+    "fields": {
+      "nombre": "Puerto de Rosario",
+      "descripcion": "Puerto fluvial sobre el río Paraná.",
+      "latitud": "-32.953300",
+      "longitud": "-60.629200",
+      "estado": "activo"
+    }
+  },
+  {
+    "model": "puntos.punto",
+    "fields": {
+      "nombre": "Puerto de Mar del Plata",
+      "descripcion": "Puerto pesquero y base naval.",
+      "latitud": "-38.033300",
+      "longitud": "-57.533300",
+      "estado": "activo"
+    }
+  },
+  {
+    "model": "puntos.punto",
+    "fields": {
+      "nombre": "Puerto Quequén",
+      "descripcion": "Puerto de aguas profundas en la desembocadura del río Quequén.",
+      "latitud": "-38.578900",
+      "longitud": "-58.701400",
+      "estado": "inactivo"
+    }
+  },
+  {
+    "model": "puntos.punto",
+    "fields": {
+      "nombre": "Puerto de Bahía Blanca",
+      "descripcion": "Complejo portuario de Ingeniero White.",
+      "latitud": "-38.791700",
+      "longitud": "-62.266700",
+      "estado": "activo"
+    }
+  },
+  {
+    "model": "puntos.punto",
+    "fields": {
+      "nombre": "Puerto Madryn",
+      "descripcion": "Muelle Almirante Storni, en el Golfo Nuevo.",
+      "latitud": "-42.737500",
+      "longitud": "-65.031400",
+      "estado": "activo"
+    }
+  },
+  {
+    "model": "puntos.punto",
+    "fields": {
+      "nombre": "Puerto de Comodoro Rivadavia",
+      "descripcion": "",
+      "latitud": "-45.861700",
+      "longitud": "-67.463900",
+      "estado": "inactivo"
+    }
+  },
+  {
+    "model": "puntos.punto",
+    "fields": {
+      "nombre": "Puerto de Ushuaia",
+      "descripcion": "Puerto sobre el Canal Beagle.",
+      "latitud": "-54.809700",
+      "longitud": "-68.302500",
+      "estado": "activo"
+    }
+  }
+]

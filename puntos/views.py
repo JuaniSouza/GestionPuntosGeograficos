@@ -1,0 +1,123 @@
+import json
+from http import HTTPStatus
+
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
+from django.views import View
+from django.views.decorators.csrf import ensure_csrf_cookie
+
+from .forms import PuntoForm
+from .models import COORDENADA_DECIMALES, Punto
+
+# Clave que agrupa los errores que no pertenecen a un campo en particular.
+ERROR_GENERAL = "general"
+
+
+@ensure_csrf_cookie
+def inicio(request):
+    """La única pantalla: mapa y tabla de puntos.
+
+    ensure_csrf_cookie hace que la respuesta lleve la cookie con el token
+    CSRF, que el JavaScript de la página reenvía en cada pedido a la API.
+    """
+    config = {
+        # Datos que ya define el modelo y que el JavaScript necesita. Se los
+        # pasamos desde acá para no volver a escribirlos en el frontend.
+        "estados": dict(Punto.Estado.choices),
+        "decimales_coordenada": COORDENADA_DECIMALES,
+    }
+    # Formulario vacío: solo se usa para dibujar los campos en la página.
+    # Los datos se envían después por la API, que los valida con PuntoForm.
+    contexto = {"config": config, "formulario": PuntoForm(label_suffix="")}
+    return render(request, "puntos/inicio.html", contexto)
+
+
+class CuerpoInvalido(Exception):
+    """El cuerpo del pedido no es un objeto JSON."""
+
+
+def punto_a_dict(punto):
+    """Convierte un Punto en un diccionario que se puede enviar como JSON."""
+    return {
+        "id": punto.id,
+        "nombre": punto.nombre,
+        "descripcion": punto.descripcion,
+        # JSON no tiene tipo decimal: se envían como número para que Leaflet
+        # pueda usarlos directamente.
+        "latitud": float(punto.latitud),
+        "longitud": float(punto.longitud),
+        "estado": punto.estado,
+    }
+
+
+def leer_json(request):
+    """Devuelve el cuerpo del pedido como diccionario o lanza CuerpoInvalido."""
+    try:
+        datos = json.loads(request.body)
+    except ValueError as error:
+        # ValueError cubre los dos casos: texto que no es JSON
+        # (JSONDecodeError) y bytes que no son texto (UnicodeDecodeError).
+        raise CuerpoInvalido("El cuerpo del pedido no es JSON válido.") from error
+    if not isinstance(datos, dict):
+        raise CuerpoInvalido("El cuerpo del pedido debe ser un objeto JSON.")
+    return datos
+
+
+def respuesta_errores(errores, estado=HTTPStatus.BAD_REQUEST):
+    """Respuesta de error con formato único: {"errores": {campo: [mensajes]}}."""
+    return JsonResponse({"errores": errores}, status=estado)
+
+
+def guardar_punto(request, punto=None, estado_ok=HTTPStatus.OK):
+    """Valida el JSON del pedido y crea un punto o actualiza el recibido.
+
+    Crear y editar comparten todo este recorrido; solo cambia si hay un punto
+    existente y el código de la respuesta.
+    """
+    try:
+        datos = leer_json(request)
+    except CuerpoInvalido as error:
+        return respuesta_errores({ERROR_GENERAL: [str(error)]})
+
+    formulario = PuntoForm(datos, instance=punto)
+    if not formulario.is_valid():
+        return respuesta_errores(formulario.errors)
+
+    punto = formulario.save()
+    return JsonResponse({"punto": punto_a_dict(punto)}, status=estado_ok)
+
+
+class PuntosView(View):
+    """/api/puntos/ — la colección de puntos.
+
+    View llama al método que se llama igual que el verbo HTTP del pedido y
+    responde 405 a los verbos que no están definidos.
+    """
+
+    def get(self, request):
+        puntos = [punto_a_dict(punto) for punto in Punto.objects.all()]
+        return JsonResponse({"puntos": puntos})
+
+    def post(self, request):
+        return guardar_punto(request, estado_ok=HTTPStatus.CREATED)
+
+
+class PuntoDetalleView(View):
+    """/api/puntos/<id>/ — un punto en particular."""
+
+    def dispatch(self, request, punto_id):
+        # dispatch corre antes que put() o delete(). Buscar el punto acá evita
+        # repetir la búsqueda y el 404 en cada método.
+        self.punto = Punto.objects.filter(pk=punto_id).first()
+        if self.punto is None:
+            return respuesta_errores(
+                {ERROR_GENERAL: ["El punto no existe."]}, HTTPStatus.NOT_FOUND
+            )
+        return super().dispatch(request)
+
+    def put(self, request):
+        return guardar_punto(request, self.punto)
+
+    def delete(self, request):
+        self.punto.delete()
+        return HttpResponse(status=HTTPStatus.NO_CONTENT)

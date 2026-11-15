@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Puntos geográficos</title>
+  <link rel="stylesheet" href="{% static 'puntos/vendor/leaflet/leaflet.css' %}">
+  <link rel="stylesheet" href="{% static 'puntos/css/estilos.css' %}">
+</head>
+<body>
+  <header class="encabezado">
+    <h1 class="encabezado__titulo">Puntos geográficos</h1>
+    <p class="encabezado__ayuda">Hacé clic en el mapa para agregar un punto.</p>
+  </header>
+
+  <p id="aviso" class="aviso" role="alert" hidden></p>
+
+  <main class="contenido">
+    <section class="panel panel--mapa" aria-label="Mapa de puntos">
+      <div id="mapa" class="mapa"></div>
+    </section>
+
+    <section class="panel panel--listado" aria-labelledby="titulo-listado">
+      <h2 id="titulo-listado" class="panel__titulo">Listado</h2>
+      <div class="tabla-contenedor">
+        <table id="tabla-puntos" class="tabla">
+          <thead>
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Estado</th>
+              <th scope="col" class="tabla__coordenadas">Coordenadas</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-puntos-cuerpo"></tbody>
+        </table>
+        <p id="listado-vacio" class="listado-vacio" hidden>Todavía no hay puntos cargados.</p>
+      </div>
+    </section>
+  </main>
+
+  {# <dialog> es la ventana modal nativa del navegador. Se abre desde formulario.js. #}
+  <dialog id="dialogo-punto" class="dialogo" aria-labelledby="dialogo-titulo">
+    {# novalidate apaga los globos de error del navegador: los mensajes los #}
+    {# muestra formulario.js junto a cada campo, con las mismas reglas. #}
+    <form id="formulario-punto" class="formulario" novalidate>
+      <h2 id="dialogo-titulo" class="dialogo__titulo">Nuevo punto</h2>
+
+      <p id="formulario-error" class="aviso aviso--en-formulario" role="alert" hidden></p>
+
+      {# Cada campo (etiqueta + control) lo genera PuntoForm a partir del modelo. #}
+      <div class="formulario__campos">
+        {% for campo in formulario %}
+          <div class="campo campo--{{ campo.name }}">
+            {{ campo.label_tag }}
+            {{ campo }}
+            <p id="error-{{ campo.name }}" class="campo__error" hidden></p>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="formulario__acciones">
+        <button type="button" id="formulario-cancelar" class="boton">Cancelar</button>
+        <button type="submit" id="formulario-guardar" class="boton boton--principal">Guardar punto</button>
+      </div>
+    </form>
+  </dialog>
+
+  {# Con method="dialog" los botones cierran la ventana sin JavaScript. #}
+  {# El value del botón elegido lo lee confirmacion.js. #}
+  <dialog id="dialogo-eliminar" class="dialogo" aria-labelledby="eliminar-titulo">
+    <form method="dialog" class="formulario">
+      <h2 id="eliminar-titulo" class="dialogo__titulo">Eliminar punto</h2>
+      <p id="eliminar-mensaje" class="dialogo__mensaje"></p>
+      <div class="formulario__acciones">
+        <button value="cancelar" class="boton">Cancelar</button>
+        <button value="confirmar" class="boton boton--peligro">Eliminar punto</button>
+      </div>
+    </form>
+  </dialog>
+
+  {# json_script escribe el diccionario como JSON dentro de la página, de forma segura. #}
+  {{ config|json_script:"config-backend" }}
+  <script src="{% static 'puntos/vendor/leaflet/leaflet.js' %}"></script>
+  <script type="module" src="{% static 'puntos/js/app.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+/* Colores, tipografía y medidas se definen una vez como variables
+   y el resto de la hoja las reutiliza. Paleta tomada de una carta náutica. */
+:root {
+  --tinta: #12263a;        /* texto principal */
+  --tinta-suave: #51677a;  /* texto secundario */
+  --carta: #e9f0f2;        /* fondo de la página */
+  --superficie: #ffffff;   /* fondo de los paneles */
+  --linea: #cbd8de;        /* bordes y divisores */
+  --agua: #17627d;         /* color de acción y de punto activo */
+  --inactivo: #7d8b96;     /* punto inactivo */
+  --error: #a3261c;        /* texto de errores */
+  --error-fondo: #fbeceb;  /* fondo de errores */
+  --foco: #f0a500;         /* contorno del elemento con foco de teclado */
+
+  --fuente: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --espacio: 1rem;
+  --radio: 6px;
+  --alto-encabezado: 3.5rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--carta);
+  color: var(--tinta);
+  font-family: var(--fuente);
+  line-height: 1.45;
+}
+
+/* Encabezado */
+.encabezado {
+  min-height: var(--alto-encabezado);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--espacio);
+  padding: 0.75rem var(--espacio);
+  background: var(--tinta);
+  color: #fff;
+}
+
+.encabezado__titulo {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.encabezado__ayuda {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #b9cbd6;
+}
+
+/* Estructura: mapa a la izquierda y listado a la derecha.
+   En pantallas angostas se apilan (ver la media query del final). */
+.contenido {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--espacio);
+  padding: var(--espacio);
+}
+
+.panel {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  overflow: hidden;
+}
+
+.panel--listado {
+  display: flex;
+  flex-direction: column;
+}
+
+.panel__titulo {
+  margin: 0;
+  padding: 0.75rem var(--espacio);
+  font-size: 1rem;
+  font-weight: 650;
+  border-bottom: 1px solid var(--linea);
+}
+
+.mapa {
+  height: 100%;
+  min-height: 24rem;
+  background: #d4e3e8;
+}
+
+/* Marcadores del mapa: un círculo cuyo color depende del estado del punto. */
+.marcador {
+  border: 3px solid var(--superficie);
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgb(18 38 58 / 0.5);
+  background: var(--color-estado);
+}
+
+
+.popup__nombre {
+  font-size: 0.95rem;
+}
+
+.popup__descripcion {
+  margin: 0.25rem 0 0;
+  color: var(--tinta-suave);
+}
+
+/* Aviso de error general */
+.aviso {
+  margin: var(--espacio) var(--espacio) 0;
+  padding: 0.6rem var(--espacio);
+  background: var(--error-fondo);
+  color: var(--error);
+  border: 1px solid currentColor;
+  border-radius: var(--radio);
+}
+
+/* Tabla */
+.tabla-contenedor {
+  overflow: auto;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tabla th,
+.tabla td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--linea);
+}
+
+.tabla th {
+  font-weight: 600;
+  color: var(--tinta-suave);
+  white-space: nowrap;
+}
+
+.tabla td:first-child {
+  /* Un nombre largo sin espacios se corta en vez de ensanchar la tabla. */
+  overflow-wrap: anywhere;
+}
+
+.tabla tbody tr:hover {
+  background: var(--carta);
+}
+
+.tabla__coordenadas {
+  /* Cifras del mismo ancho, para que las coordenadas queden alineadas. */
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.listado-vacio {
+  margin: 0;
+  padding: 2rem var(--espacio);
+  text-align: center;
+  color: var(--tinta-suave);
+}
+
+/* Estado: un círculo del mismo color que el marcador del mapa, más el texto. */
+.estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.estado::before {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--color-estado);
+}
+
+.marcador--activo,
+.estado--activo {
+  --color-estado: var(--agua);
+}
+
+.marcador--inactivo,
+.estado--inactivo {
+  --color-estado: var(--inactivo);
+}
+
+/* Botones */
+.acciones {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.boton {
+  padding: 0.3rem 0.7rem;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--agua);
+  background: var(--superficie);
+  border: 1px solid currentColor;
+  border-radius: var(--radio);
+  cursor: pointer;
+}
+
+.boton:hover {
+  color: var(--superficie);
+  background: var(--agua);
+  border-color: var(--agua);
+}
+
+.boton--peligro {
+  color: var(--error);
+}
+
+.boton--peligro:hover {
+  background: var(--error);
+  border-color: var(--error);
+}
+
+.boton:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1000px) {
+  .contenido {
+    grid-template-columns: 1fr;
+  }
+
+  .mapa {
+    height: 55vh;
+  }
+}
+
+@media (max-width: 480px) {
+  /* En el celular los botones se apilan para que la tabla entre a lo ancho. */
+  .acciones {
+    flex-direction: column;
+  }
+}
+
+/* Formulario en ventana modal */
+.dialogo {
+  width: min(28rem, calc(100vw - 2 * var(--espacio)));
+  padding: 0;
+  color: var(--tinta);
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  box-shadow: 0 12px 40px rgb(18 38 58 / 0.35);
+}
+
+/* Fondo que oscurece la página mientras la ventana está abierta. */
+.dialogo::backdrop {
+  background: rgb(18 38 58 / 0.55);
+}
+
+.formulario {
+  display: grid;
+  gap: var(--espacio);
+  padding: 1.25rem;
+}
+
+.dialogo__titulo {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 650;
+}
+
+.dialogo__mensaje {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.aviso--en-formulario {
+  margin: 0;
+}
+
+/* Dos columnas: latitud y longitud comparten renglón, el resto ocupa todo el ancho. */
+.formulario__campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem var(--espacio);
+}
+
+.campo {
+  display: grid;
+  gap: 0.25rem;
+  grid-column: 1 / -1;
+}
+
+.campo--latitud,
+.campo--longitud {
+  grid-column: auto;
+}
+
+.campo label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--tinta-suave);
+}
+
+.campo input,
+.campo textarea,
+.campo select {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  font: inherit;
+  color: var(--tinta);
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+}
+
+/* aria-invalid lo pone formulario.js en los campos con error. */
+.campo [aria-invalid="true"] {
+  border-color: var(--error);
+  background: var(--error-fondo);
+}
+
+.campo__error {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--error);
+}
+
+.campo textarea {
+  resize: vertical;
+}
+
+.campo--latitud input,
+.campo--longitud input {
+  font-variant-numeric: tabular-nums;
+}
+
+.campo input:focus-visible,
+.campo textarea:focus-visible,
+.campo select:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 1px;
+  border-color: var(--agua);
+}
+
+.formulario__acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.formulario__acciones .boton {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.boton--principal {
+  color: var(--superficie);
+  background: var(--agua);
+  border-color: var(--agua);
+}
+
+.boton--principal:hover {
+  background: var(--tinta);
+  border-color: var(--tinta);
+}
+
+.boton:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}

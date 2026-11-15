@@ -1,0 +1,14 @@
+# Lo que no se copia a la imagen.
+
+# Entorno virtual y archivos generados por Python
+.venv/
+__pycache__/
+*.pyc
+
+# Base de datos local: en Docker los datos viven en un volumen
+data/*
+!data/.gitkeep
+
+# Historial de git y archivos de herramientas
+.git/
+.claude/

@@ -1,0 +1,8 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Base de datos local (en Docker vive en un volumen)
+data/*
+!data/.gitkeep

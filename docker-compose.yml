@@ -1,0 +1,23 @@
+# Cómo se ejecuta la aplicación. Se usa con: docker compose up --build
+
+services:
+  web:
+    # Construye la imagen con el Dockerfile de esta carpeta.
+    build: .
+    # puerto de tu máquina : puerto del contenedor
+    ports:
+      - "8000:8000"
+    # Configuración que lee config/settings.py.
+    environment:
+      DJANGO_DEBUG: "true"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1"
+    # La carpeta /app/data del contenedor (donde está db.sqlite3) se guarda
+    # en el volumen "datos". Así la base sobrevive aunque el contenedor se
+    # elimine y se vuelva a crear.
+    volumes:
+      - datos:/app/data
+
+# Volumen administrado por Docker. Vive fuera del contenedor.
+# Se conserva con "docker compose down" y solo se borra con "down -v".
+volumes:
+  datos:
