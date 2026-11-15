@@ -2,13 +2,23 @@
 
 import { MAPA } from "./config.js";
 
-/** Crea el mapa dentro del elemento con ese id y devuelve sus operaciones. */
-export function crearMapa(idElemento) {
+/**
+ * Crea el mapa dentro del elemento con ese id y devuelve sus operaciones.
+ * alHacerClic recibe { latitud, longitud } del lugar donde se hizo clic.
+ */
+export function crearMapa(idElemento, { alHacerClic }) {
   const mapa = L.map(idElemento).setView(MAPA.centroInicial, MAPA.zoomInicial);
   L.tileLayer(MAPA.urlTeselas, { attribution: MAPA.atribucion }).addTo(mapa);
 
   // Capa que agrupa los marcadores, para poder borrarlos todos juntos.
   const capaMarcadores = L.layerGroup().addTo(mapa);
+
+  mapa.on("click", (evento) => {
+    // El mapa se repite hacia los costados y ahí la longitud pasa de 180.
+    // wrap() la devuelve al rango -180 a 180.
+    const { lat, lng } = evento.latlng.wrap();
+    alHacerClic({ latitud: lat, longitud: lng });
+  });
 
   /** Reemplaza los marcadores por los de la lista recibida. */
   function mostrarPuntos(puntos) {

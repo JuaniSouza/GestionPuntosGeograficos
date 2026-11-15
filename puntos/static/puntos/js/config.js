@@ -2,6 +2,10 @@
 
 export const URL_API_PUNTOS = "/api/puntos/";
 
+// Django entrega un token en esta cookie y lo exige de vuelta en esta cabecera
+// en cada pedido que modifica datos (protección CSRF).
+export const CSRF = { cookie: "csrftoken", cabecera: "X-CSRFToken" };
+
 // Datos que define el backend (ver la vista inicio) y llegan escritos en la
 // página como JSON: los nombres de los estados y la precisión de las coordenadas.
 const configBackend = JSON.parse(

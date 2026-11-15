@@ -26,7 +26,10 @@ def inicio(request):
         "estados": dict(Punto.Estado.choices),
         "decimales_coordenada": COORDENADA_DECIMALES,
     }
-    return render(request, "puntos/inicio.html", {"config": config})
+    # Formulario vacío: solo se usa para dibujar los campos en la página.
+    # Los datos se envían después por la API, que los valida con PuntoForm.
+    contexto = {"config": config, "formulario": PuntoForm(label_suffix="")}
+    return render(request, "puntos/inicio.html", contexto)
 
 
 class CuerpoInvalido(Exception):

@@ -61,7 +61,7 @@ Cada paso arranca por sus tests (caso feliz y casos de error).
 - [x] **8. Mapa con puntos.** Leaflet carga los puntos desde la API. Al
   seleccionar un marcador muestra nombre y descripción. Inactivos en gris.
 - [x] **9. Tabla.** Nombre, estado, coordenadas y acciones.
-- [ ] **10. Crear desde el mapa.** Click en el mapa abre el formulario con las
+- [x] **10. Crear desde el mapa.** Click en el mapa abre el formulario con las
   coordenadas precargadas.
 - [ ] **11. Editar.** Desde la tabla, con el mismo formulario.
 - [ ] **12. Eliminar.** Con confirmación.

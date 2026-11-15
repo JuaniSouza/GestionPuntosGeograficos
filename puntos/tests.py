@@ -290,3 +290,16 @@ class PaginaInicioTests(TestCase):
             },
         )
         self.assertContains(respuesta, 'id="config-backend"')
+
+    def test_incluye_el_formulario_generado_desde_el_modelo(self):
+        respuesta = self.client.get("/")
+
+        self.assertContains(respuesta, 'id="dialogo-punto"')
+        self.assertContains(respuesta, 'id="formulario-punto"')
+        # Los campos los dibuja PuntoForm: mismos nombres que espera la API.
+        for campo in ("nombre", "descripcion", "latitud", "longitud", "estado"):
+            with self.subTest(campo=campo):
+                self.assertContains(respuesta, f'name="{campo}"')
+        # Las reglas del modelo llegan al HTML sin volver a escribirlas.
+        self.assertContains(respuesta, 'maxlength="100"')
+        self.assertContains(respuesta, '<option value="inactivo">Inactivo</option>')
