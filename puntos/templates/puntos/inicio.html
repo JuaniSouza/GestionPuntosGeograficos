@@ -64,8 +64,8 @@
     </form>
   </dialog>
 
-  {# Con method="dialog" los botones cierran la ventana solos, y el value del
-     botón elegido queda disponible para el JavaScript (ver confirmacion.js). #}
+  {# Con method="dialog" los botones cierran la ventana sin JavaScript. #}
+  {# El value del botón elegido lo lee confirmacion.js. #}
   <dialog id="dialogo-eliminar" class="dialogo" aria-labelledby="eliminar-titulo">
     <form method="dialog" class="formulario">
       <h2 id="eliminar-titulo" class="dialogo__titulo">Eliminar punto</h2>

@@ -308,3 +308,9 @@ class PaginaInicioTests(TestCase):
         respuesta = self.client.get("/")
 
         self.assertContains(respuesta, 'id="dialogo-eliminar"')
+
+    def test_los_comentarios_del_template_no_llegan_a_la_pagina(self):
+        # {# #} solo funciona en un renglón: si ocupa dos, Django lo muestra.
+        respuesta = self.client.get("/")
+
+        self.assertNotContains(respuesta, "{#")
