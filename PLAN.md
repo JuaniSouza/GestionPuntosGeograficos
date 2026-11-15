@@ -73,10 +73,10 @@ Cada paso arranca por sus tests (caso feliz y casos de error).
 
 - [x] **14. Datos de ejemplo.** Fixture y carga automática que no duplica.
 - [x] **15. Dockerfile.**
-- [ ] **16. docker-compose.yml.** Volumen para SQLite y arranque que migra y
+- [x] **16. docker-compose.yml.** Volumen para SQLite y arranque que migra y
   carga los datos solo.
   *Listo cuando:* `docker compose up --build` levanta todo sin pasos manuales.
-- [ ] **17. Prueba de persistencia.** Crear un punto, `docker compose down`,
+- [x] **17. Prueba de persistencia.** Crear un punto, `docker compose down`,
   `up`, y el punto sigue ahí.
 
 ## Etapa 5 — Entrega
