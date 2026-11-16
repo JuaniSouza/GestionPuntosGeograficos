@@ -46,21 +46,32 @@ No hay pasos manuales. Al iniciar, el contenedor:
 docker compose run --rm web python manage.py test
 ```
 
-Son 42 tests que cubren el modelo, la API, la página y la carga de ejemplos.
+Son 45 tests que cubren el modelo, la API, la página y la carga de ejemplos.
 Usan una base de datos temporal, no tocan los datos cargados.
 
 ## Cómo se usa
 
-- **Ver puntos:** el mapa y la tabla muestran los mismos puntos. Los activos
+El mapa ocupa toda la pantalla. El listado es un panel flotante (a la derecha
+en pantallas anchas, abajo en el celular) que se pliega con *Ocultar*.
+
+- **Ver puntos:** el mapa y el listado muestran los mismos puntos. Los activos
   se ven en azul y los inactivos en gris.
 - **Ver el detalle:** clic en un marcador muestra el nombre y la descripción.
+- **Ir a un punto:** clic en su nombre en el listado. El mapa se centra en él
+  y abre su información.
+- **Buscar y filtrar:** por nombre (sin distinguir mayúsculas ni acentos) y
+  por estado. Los filtros se aplican al listado y a los marcadores.
 - **Crear:** clic en cualquier lugar del mapa. Se abre el formulario con la
   latitud y la longitud de ese lugar ya cargadas.
 - **Editar:** botón *Editar* de la fila. Abre el mismo formulario con los
   datos del punto.
 - **Eliminar:** botón *Eliminar* de la fila. Pide confirmación.
 
-Los cambios se reflejan en el mapa y en la tabla sin recargar la página.
+Además, el mapa muestra abajo a la izquierda las coordenadas del cursor, y
+tiene una capa de señales náuticas de OpenSeaMap (boyas, balizas, faros) que
+se prende y apaga con el botón de capas.
+
+Los cambios se reflejan en el mapa y en el listado sin recargar la página.
 
 ## Persistencia
 
@@ -163,6 +174,8 @@ de mensajes.
             ├── api.js           Pedidos al backend (único lugar con fetch)
             ├── mapa.js          Todo lo relacionado con Leaflet
             ├── tabla.js         El listado
+            ├── filtros.js       Buscador por nombre y filtro por estado
+            ├── panel.js         Panel flotante: plegar y zona que tapa
             ├── formulario.js    Ventana para crear y editar
             ├── validacion.js    Mensajes de la validación del navegador
             └── confirmacion.js  Ventana para confirmar la eliminación
@@ -179,7 +192,7 @@ no se justificaba sumar una dependencia.
 
 ### Una sola pantalla
 
-El mapa y la tabla se ven juntos y todas las operaciones se hacen con `fetch`
+El mapa ocupa toda la pantalla y el listado flota encima; se ven juntos y todas las operaciones se hacen con `fetch`
 contra la API, sin recargar. Después de cada cambio se vuelve a pedir la lista
 completa: es más simple y la pantalla siempre muestra lo que está guardado.
 
@@ -212,6 +225,18 @@ el formulario tiene una sola función para mostrarlos.
 Se guardan con 6 decimales (unos 11 cm de precisión) en un `DecimalField` y no
 en un `FloatField`, para que el valor guardado sea exactamente el ingresado y
 no una aproximación binaria.
+
+### Filtros en el navegador
+
+El buscador y el filtro por estado trabajan sobre los puntos ya cargados, sin
+pedirle nada al backend. Para la cantidad de puntos de este ejercicio es
+instantáneo y más simple. Con miles de puntos convendría filtrar y paginar en
+el servidor.
+
+### El mapa descuenta el panel
+
+Al abrir la página o al ir a un punto, se calcula cuánto del mapa tapa el
+panel y se usa como margen, para que ningún marcador quede detrás.
 
 ### Seguridad
 
@@ -288,15 +313,21 @@ variables de entorno (`DJANGO_SECRET_KEY`, `DJANGO_DEBUG`,
   comportamiento de SQLite.
 - **Sin conexión a internet no se ve el fondo del mapa.** Los marcadores, la
   tabla y el resto de las funciones siguen andando.
-- **En pantallas muy angostas la tabla se desplaza hacia el costado.**
+- **La capa de señales náuticas depende de la cobertura de OpenSeaMap**, que
+  cargan voluntarios y en algunas zonas es escasa.
 
 ## Mejoras posibles
 
 No se incluyeron porque la consigna no las pide:
 
 - Autenticación y permisos por usuario.
-- Paginación, búsqueda y filtro por estado en el listado.
-- Agrupar marcadores cercanos cuando hay muchos puntos.
+- Paginación y filtros resueltos en el servidor, para muchos puntos.
+- Agrupar marcadores cercanos cuando hay muchos puntos. Requiere sumar un
+  plugin de Leaflet y, con pocos puntos, no aporta.
+- Mover un punto arrastrando su marcador. Hoy la posición se cambia desde
+  *Editar*.
+- Historial de cambios de cada punto.
+- Ejecutar los tests automáticamente en cada push (integración continua).
 - Actualizar en pantalla solo el punto modificado, en lugar de pedir la lista
   completa.
 - Tests automáticos del frontend en un navegador.
@@ -309,8 +340,9 @@ No se incluyeron porque la consigna no las pide:
 | El navegador dice "ha rechazado la conexión" | La aplicación no está corriendo | Ejecutar `docker compose up` y esperar `>>> Aplicación lista` |
 | `http://0.0.0.0:8000` no abre | Esa dirección no sirve en el navegador | Usar `http://localhost:8000` |
 | Levanta pero el navegador no conecta | El contenedor quedó sin el puerto publicado | `docker compose down` y `docker compose up` |
-| Los cambios en el código no se ven | La imagen no se reconstruyó | `docker compose up --build` |
-| `docker: command not found` | Docker Desktop no está instalado o abierto | Instalarlo, abrirlo y reabrir la terminal |
+| Los cambios en el código no se ven | La imagen no se reconstruyó, o el navegador guardó la versión anterior | `docker compose up --build` y recargar con Ctrl + F5 |
+| `docker: command not found` | Docker Desktop no está instalado | Instalarlo y reabrir la terminal |
+| `failed to connect to the docker API` | Docker Desktop no está abierto | Abrirlo y esperar a que diga "Engine running" |
 
 ## Desarrollo sin Docker
 
