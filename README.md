@@ -206,6 +206,8 @@ Los límites de las coordenadas y la cantidad de decimales son constantes en
   HTML, que genera el mismo `PuntoForm`,
 - los nombres de los estados y la precisión que usa el JavaScript, que el
   backend escribe en la página con `json_script`.
+- las opciones del filtro por estado, que el template arma con los estados
+  del modelo.
 
 El JavaScript no contiene ninguna regla ni ningún límite: `validacion.js` solo
 traduce a un mensaje el resultado que calcula el navegador con esos atributos.
@@ -303,6 +305,7 @@ variables de entorno (`DJANGO_SECRET_KEY`, `DJANGO_DEBUG`,
 
 ## Límites conocidos
 
+- **Los filtros no se guardan.** Al recargar la página vuelven a "todos".
 - **Los datos son locales.** Cada instalación tiene su propia base. Para que
   varios usuarios compartan los puntos habría que desplegar la aplicación en
   un servidor y pasar a una base como PostgreSQL.
