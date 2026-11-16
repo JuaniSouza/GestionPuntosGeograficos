@@ -85,6 +85,20 @@ Cada paso arranca por sus tests (caso feliz y casos de error).
   y endpoints.
 - [x] **19. Repaso final.** Revisión completa del código y guion para la defensa.
 
+## Etapa 6 — Mejoras de diseño
+
+Fuera de la consigna. Se tomó como referencia el estilo de GeoCrux.
+
+- [x] **20. Mapa a pantalla completa.** El listado pasa a ser un panel flotante
+  que se puede plegar.
+- [x] **21. Buscador.** Filtra el listado por nombre y muestra la cantidad.
+- [x] **22. Ir al punto.** Al elegir un punto del listado, el mapa se centra en
+  él y abre su información.
+- [x] **23. Filtro por estado.** Junto al buscador; filtra el listado y el mapa.
+- [x] **24. Coordenadas del cursor** en una esquina del mapa.
+- [x] **25. Capa de señales náuticas** (OpenSeaMap), que se puede apagar.
+- [x] **26. README al día** con el diseño nuevo.
+
 ## Skills
 
 Antes de cada paso se revisa esta tabla y se carga la skill que corresponda.

@@ -2,24 +2,41 @@
 
 import { DECIMALES_COORDENADA, ESTADOS } from "./config.js";
 
+const MENSAJES_VACIO = {
+  sinPuntos: "Todavía no hay puntos cargados.",
+  sinCoincidencias: "Ningún punto coincide con los filtros.",
+};
+
 /**
  * Prepara la tabla y devuelve sus operaciones.
- * alEditar y alEliminar son funciones que reciben el punto de la fila.
+ * alEditar, alEliminar y alSeleccionar son funciones que reciben el punto
+ * de la fila.
  */
-export function crearTabla({ alEditar, alEliminar }) {
+export function crearTabla({ alEditar, alEliminar, alSeleccionar }) {
   const cuerpo = document.getElementById("tabla-puntos-cuerpo");
   const mensajeVacio = document.getElementById("listado-vacio");
+  const cantidad = document.getElementById("listado-cantidad");
 
-  /** Reemplaza las filas por las de la lista recibida. */
-  function mostrarPuntos(puntos) {
+  /**
+   * Reemplaza las filas por las de los puntos recibidos.
+   * total es la cantidad de puntos que existen, contando los que los
+   * filtros dejaron afuera.
+   */
+  function mostrarPuntos(puntos, total) {
     cuerpo.replaceChildren(...puntos.map(crearFila));
+    cantidad.textContent =
+      puntos.length === total ? `(${total})` : `(${puntos.length} de ${total})`;
+    mensajeVacio.textContent =
+      total === 0 ? MENSAJES_VACIO.sinPuntos : MENSAJES_VACIO.sinCoincidencias;
     mensajeVacio.hidden = puntos.length > 0;
   }
 
   function crearFila(punto) {
     const fila = document.createElement("tr");
     fila.append(
-      crearCelda(punto.nombre),
+      crearCelda(
+        crearBoton(punto.nombre, "tabla__nombre", () => alSeleccionar(punto))
+      ),
       crearCelda(crearEtiquetaEstado(punto.estado)),
       crearCelda(crearCoordenadas(punto), "tabla__coordenadas"),
       crearCelda(crearAcciones(punto), "tabla__acciones")

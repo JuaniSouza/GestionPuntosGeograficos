@@ -15,7 +15,10 @@
   --fuente: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --espacio: 1rem;
   --radio: 6px;
-  --alto-encabezado: 3.5rem;
+  --alto-marca: 3.9rem;      /* alto de la tarjeta con el título */
+  --ancho-panel: 31rem;
+  --alto-creditos: 1.75rem;  /* franja de créditos al pie del mapa */
+  --sombra: 0 6px 24px rgb(18 38 58 / 0.28);
 }
 
 *,
@@ -26,74 +29,143 @@
 
 body {
   margin: 0;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  /* Marco de referencia para lo que flota sobre el mapa. */
+  position: relative;
   background: var(--carta);
   color: var(--tinta);
   font-family: var(--fuente);
   line-height: 1.45;
 }
 
-/* Encabezado */
+/* Título: una tarjeta chica que flota sobre el mapa, arriba a la izquierda.
+   No hay barra superior: el mapa ocupa toda la pantalla. */
 .encabezado {
-  min-height: var(--alto-encabezado);
+  position: absolute;
+  top: var(--espacio);
+  left: var(--espacio);
+  z-index: 1;
+  max-width: calc(100% - 2 * var(--espacio));
+  min-height: var(--alto-marca);
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0 var(--espacio);
-  padding: 0.75rem var(--espacio);
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.55rem 0.9rem;
   background: var(--tinta);
   color: #fff;
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
 }
 
 .encabezado__titulo {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   font-weight: 650;
   letter-spacing: -0.01em;
 }
 
 .encabezado__ayuda {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #b9cbd6;
 }
 
-/* Estructura: mapa a la izquierda y listado a la derecha.
-   En pantallas angostas se apilan (ver la media query del final). */
+/* Los botones de zoom de Leaflet bajan para quedar debajo del título. */
+.mapa .leaflet-top.leaflet-left {
+  top: calc(var(--alto-marca) + var(--espacio));
+}
+
+/* Estructura: el mapa ocupa toda la pantalla y el panel del listado flota
+   encima. .contenido es el marco de referencia para ubicar los dos. */
 .contenido {
-  flex: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--espacio);
-  padding: var(--espacio);
+  position: relative;
+  height: 100%;
+}
+
+.mapa {
+  position: absolute;
+  inset: 0;
+  background: #d4e3e8;
+  /* Leaflet usa z-index altos; con esto quedan encerrados dentro del mapa
+     y no tapan el panel. */
+  isolation: isolate;
 }
 
 .panel {
+  position: absolute;
+  top: var(--espacio);
+  right: var(--espacio);
+  width: min(var(--ancho-panel), calc(100% - 2 * var(--espacio)));
+  /* Deja libre el borde inferior, donde el mapa muestra sus créditos. */
+  max-height: calc(100% - var(--espacio) - var(--alto-creditos));
+  display: flex;
+  flex-direction: column;
   background: var(--superficie);
   border: 1px solid var(--linea);
   border-radius: var(--radio);
+  box-shadow: var(--sombra);
   overflow: hidden;
 }
 
-.panel--listado {
+.panel__cabecera {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio);
+  padding: 0.6rem var(--espacio);
 }
 
 .panel__titulo {
   margin: 0;
-  padding: 0.75rem var(--espacio);
   font-size: 1rem;
   font-weight: 650;
-  border-bottom: 1px solid var(--linea);
 }
 
-.mapa {
-  height: 100%;
-  min-height: 24rem;
-  background: #d4e3e8;
+.panel__cuerpo {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-top: 1px solid var(--linea);
+}
+
+.panel__cantidad {
+  margin-left: 0.25rem;
+  font-weight: 400;
+  color: var(--tinta-suave);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Buscador y filtro por estado, uno al lado del otro. */
+.filtros {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.6rem var(--espacio);
+}
+
+.filtros__control {
+  min-width: 0;
+  padding: 0.45rem 0.6rem;
+  font: inherit;
+  color: var(--tinta);
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+}
+
+.filtros__control--buscador {
+  flex: 1;
+}
+
+.filtros__control:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 1px;
+  border-color: var(--agua);
+}
+
+/* Panel plegado: queda solo la cabecera. La clase la pone panel.js. */
+.panel--plegado .panel__cuerpo {
+  display: none;
 }
 
 /* Marcadores del mapa: un círculo cuyo color depende del estado del punto. */
@@ -114,14 +186,42 @@ body {
   color: var(--tinta-suave);
 }
 
-/* Aviso de error general */
+/* Coordenadas del cursor, en la esquina inferior izquierda del mapa. */
+.coordenadas-cursor {
+  padding: 0.2rem 0.55rem;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  background: var(--tinta);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+/* Vacío hasta que el cursor entra al mapa (y siempre en pantallas táctiles). */
+.coordenadas-cursor:empty {
+  display: none;
+}
+
+/* Aviso de error */
 .aviso {
-  margin: var(--espacio) var(--espacio) 0;
+  margin: 0;
   padding: 0.6rem var(--espacio);
   background: var(--error-fondo);
   color: var(--error);
   border: 1px solid currentColor;
   border-radius: var(--radio);
+}
+
+/* El aviso general flota sobre el mapa, centrado abajo. */
+.aviso--flotante {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--alto-creditos) + var(--espacio));
+  z-index: 2;
+  width: max-content;
+  max-width: calc(100% - 2 * var(--espacio));
+  transform: translateX(-50%);
+  box-shadow: var(--sombra);
 }
 
 /* Tabla */
@@ -155,6 +255,28 @@ body {
 
 .tabla tbody tr:hover {
   background: var(--carta);
+}
+
+/* El nombre es un botón con aspecto de enlace: lleva el mapa hasta el punto. */
+.tabla__nombre {
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--agua);
+  text-align: left;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.tabla__nombre:hover {
+  text-decoration: underline;
+}
+
+.tabla__nombre:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
 }
 
 .tabla__coordenadas {
@@ -234,23 +356,6 @@ body {
   outline-offset: 2px;
 }
 
-@media (max-width: 1000px) {
-  .contenido {
-    grid-template-columns: 1fr;
-  }
-
-  .mapa {
-    height: 55vh;
-  }
-}
-
-@media (max-width: 480px) {
-  /* En el celular los botones se apilan para que la tabla entre a lo ancho. */
-  .acciones {
-    flex-direction: column;
-  }
-}
-
 /* Formulario en ventana modal */
 .dialogo {
   width: min(28rem, calc(100vw - 2 * var(--espacio)));
@@ -259,7 +364,7 @@ body {
   background: var(--superficie);
   border: 1px solid var(--linea);
   border-radius: var(--radio);
-  box-shadow: 0 12px 40px rgb(18 38 58 / 0.35);
+  box-shadow: var(--sombra);
 }
 
 /* Fondo que oscurece la página mientras la ventana está abierta. */
@@ -298,6 +403,8 @@ body {
 .campo {
   display: grid;
   gap: 0.25rem;
+  /* Si el campo de al lado muestra un error, este no se estira. */
+  align-content: start;
   grid-column: 1 / -1;
 }
 
@@ -378,4 +485,63 @@ body {
 .boton:disabled {
   opacity: 0.6;
   cursor: progress;
+}
+
+/* En pantallas angostas el panel pasa abajo y ocupa todo el ancho. */
+@media (max-width: 700px) {
+  .panel {
+    top: auto;
+    bottom: var(--alto-creditos);
+    left: var(--espacio);
+    right: var(--espacio);
+    width: auto;
+    max-height: 55%;
+  }
+}
+
+/* En el celular las cuatro columnas no entran. Cada fila se reacomoda como
+   una ficha: nombre, estado y coordenadas a la izquierda, acciones a la
+   derecha. Sigue siendo una tabla para los lectores de pantalla. */
+@media (max-width: 480px) {
+  /* Los títulos de columna se ocultan a la vista, no a los lectores. */
+  .tabla thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .tabla tbody tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.15rem var(--espacio);
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .tabla tbody td {
+    grid-column: 1;
+    padding: 0;
+    border: 0;
+    text-align: left;
+  }
+
+  .tabla td:first-child {
+    font-weight: 600;
+  }
+
+  .tabla td.tabla__coordenadas {
+    color: var(--tinta-suave);
+  }
+
+  .tabla td.tabla__acciones {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: center;
+  }
+
+  .acciones {
+    flex-direction: column;
+  }
 }

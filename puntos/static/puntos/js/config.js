@@ -14,12 +14,18 @@ const configBackend = JSON.parse(
 export const ESTADOS = configBackend.estados;
 export const DECIMALES_COORDENADA = configBackend.decimales_coordenada;
 
+// Por debajo de este ancho el panel del listado arranca plegado, para que se
+// vea el mapa. Coincide con la media query de estilos.css.
+export const CONSULTA_PANTALLA_ANGOSTA = "(max-width: 700px)";
+
 export const MAPA = {
   // Vista inicial cuando todavía no hay puntos: Argentina completa.
   centroInicial: [-38.4, -63.6],
   zoomInicial: 4,
   // Zoom máximo al encuadrar los puntos, para no acercar de más si hay uno solo.
   zoomMaximoAlEncuadrar: 14,
+  // Zoom al que se acerca el mapa cuando se elige un punto del listado.
+  zoomAlEnfocar: 11,
   // Margen en píxeles entre los puntos y el borde del mapa al encuadrar.
   margenAlEncuadrar: [40, 40],
   urlTeselas: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -30,4 +36,11 @@ export const MAPA = {
   politicaDeReferencia: "strict-origin-when-cross-origin",
   atribucion:
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  // Capa opcional que se dibuja encima: boyas, balizas y faros de OpenSeaMap.
+  // Son imágenes transparentes que solo traen las señales.
+  senalesNauticas: {
+    nombre: "Señales náuticas",
+    urlTeselas: "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
+    atribucion: '&copy; <a href="https://www.openseamap.org/">OpenSeaMap</a>',
+  },
 };

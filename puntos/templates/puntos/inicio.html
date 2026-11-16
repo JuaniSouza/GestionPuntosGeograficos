@@ -14,28 +14,48 @@
     <p class="encabezado__ayuda">Hacé clic en el mapa para agregar un punto.</p>
   </header>
 
-  <p id="aviso" class="aviso" role="alert" hidden></p>
+  <p id="aviso" class="aviso aviso--flotante" role="alert" hidden></p>
 
+  {# El mapa ocupa toda la pantalla y el listado flota encima, a un costado. #}
   <main class="contenido">
-    <section class="panel panel--mapa" aria-label="Mapa de puntos">
-      <div id="mapa" class="mapa"></div>
-    </section>
+    <div id="mapa" class="mapa" role="region" aria-label="Mapa de puntos"></div>
 
-    <section class="panel panel--listado" aria-labelledby="titulo-listado">
-      <h2 id="titulo-listado" class="panel__titulo">Listado</h2>
-      <div class="tabla-contenedor">
-        <table id="tabla-puntos" class="tabla">
-          <thead>
-            <tr>
-              <th scope="col">Nombre</th>
-              <th scope="col">Estado</th>
-              <th scope="col" class="tabla__coordenadas">Coordenadas</th>
-              <th scope="col">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-puntos-cuerpo"></tbody>
-        </table>
-        <p id="listado-vacio" class="listado-vacio" hidden>Todavía no hay puntos cargados.</p>
+    <section id="panel-listado" class="panel" aria-labelledby="titulo-listado">
+      <header class="panel__cabecera">
+        <h2 id="titulo-listado" class="panel__titulo">
+          Puntos <span id="listado-cantidad" class="panel__cantidad"></span>
+        </h2>
+        {# aria-expanded informa a los lectores de pantalla si el panel está abierto. #}
+        <button type="button" id="panel-alternar" class="boton"
+                aria-expanded="true" aria-controls="panel-cuerpo">Ocultar</button>
+      </header>
+
+      <div id="panel-cuerpo" class="panel__cuerpo">
+        <div class="filtros">
+          <input type="search" id="buscador" class="filtros__control filtros__control--buscador"
+                 placeholder="Buscar por nombre" aria-label="Buscar puntos por nombre">
+          {# Las opciones salen de los estados que define el modelo. #}
+          <select id="filtro-estado" class="filtros__control" aria-label="Filtrar por estado">
+            <option value="">Todos los estados</option>
+            {% for valor, etiqueta in config.estados.items %}
+              <option value="{{ valor }}">{{ etiqueta }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="tabla-contenedor">
+          <table id="tabla-puntos" class="tabla">
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Estado</th>
+                <th scope="col" class="tabla__coordenadas">Coordenadas</th>
+                <th scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-puntos-cuerpo"></tbody>
+          </table>
+          <p id="listado-vacio" class="listado-vacio" hidden>Todavía no hay puntos cargados.</p>
+        </div>
       </div>
     </section>
   </main>
