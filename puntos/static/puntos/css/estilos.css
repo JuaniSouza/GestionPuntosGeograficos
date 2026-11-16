@@ -15,7 +15,7 @@
   --fuente: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --espacio: 1rem;
   --radio: 6px;
-  --alto-encabezado: 3.5rem;
+  --alto-marca: 3.9rem;      /* alto de la tarjeta con el título */
   --ancho-panel: 31rem;
   --alto-creditos: 1.75rem;  /* franja de créditos al pie del mapa */
   --sombra: 0 6px 24px rgb(18 38 58 / 0.28);
@@ -31,45 +31,56 @@ body {
   margin: 0;
   height: 100vh;
   height: 100dvh;
-  display: flex;
-  flex-direction: column;
+  /* Marco de referencia para lo que flota sobre el mapa. */
+  position: relative;
   background: var(--carta);
   color: var(--tinta);
   font-family: var(--fuente);
   line-height: 1.45;
 }
 
-/* Encabezado */
+/* Título: una tarjeta chica que flota sobre el mapa, arriba a la izquierda.
+   No hay barra superior: el mapa ocupa toda la pantalla. */
 .encabezado {
-  min-height: var(--alto-encabezado);
+  position: absolute;
+  top: var(--espacio);
+  left: var(--espacio);
+  z-index: 1;
+  max-width: calc(100% - 2 * var(--espacio));
+  min-height: var(--alto-marca);
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0 var(--espacio);
-  padding: 0.75rem var(--espacio);
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.55rem 0.9rem;
   background: var(--tinta);
   color: #fff;
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
 }
 
 .encabezado__titulo {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   font-weight: 650;
   letter-spacing: -0.01em;
 }
 
 .encabezado__ayuda {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #b9cbd6;
+}
+
+/* Los botones de zoom de Leaflet bajan para quedar debajo del título. */
+.mapa .leaflet-top.leaflet-left {
+  top: calc(var(--alto-marca) + var(--espacio));
 }
 
 /* Estructura: el mapa ocupa toda la pantalla y el panel del listado flota
    encima. .contenido es el marco de referencia para ubicar los dos. */
 .contenido {
-  flex: 1;
   position: relative;
-  min-height: 0;
+  height: 100%;
 }
 
 .mapa {
@@ -164,14 +175,26 @@ body {
   color: var(--tinta-suave);
 }
 
-/* Aviso de error general */
+/* Aviso de error */
 .aviso {
-  margin: var(--espacio) var(--espacio) 0;
+  margin: 0;
   padding: 0.6rem var(--espacio);
   background: var(--error-fondo);
   color: var(--error);
   border: 1px solid currentColor;
   border-radius: var(--radio);
+}
+
+/* El aviso general flota sobre el mapa, centrado abajo. */
+.aviso--flotante {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--alto-creditos) + var(--espacio));
+  z-index: 2;
+  width: max-content;
+  max-width: calc(100% - 2 * var(--espacio));
+  transform: translateX(-50%);
+  box-shadow: var(--sombra);
 }
 
 /* Tabla */
