@@ -2,24 +2,59 @@
 
 import { DECIMALES_COORDENADA, ESTADOS } from "./config.js";
 
+const MENSAJES_VACIO = {
+  sinPuntos: "Todavía no hay puntos cargados.",
+  sinCoincidencias: "Ningún punto coincide con la búsqueda.",
+};
+
 /**
  * Prepara la tabla y devuelve sus operaciones.
- * alEditar y alEliminar son funciones que reciben el punto de la fila.
+ * alEditar, alEliminar y alSeleccionar son funciones que reciben el punto
+ * de la fila.
  */
-export function crearTabla({ alEditar, alEliminar }) {
+export function crearTabla({ alEditar, alEliminar, alSeleccionar }) {
   const cuerpo = document.getElementById("tabla-puntos-cuerpo");
   const mensajeVacio = document.getElementById("listado-vacio");
+  const buscador = document.getElementById("buscador");
+  const cantidad = document.getElementById("listado-cantidad");
 
-  /** Reemplaza las filas por las de la lista recibida. */
+  // Todos los puntos recibidos; la búsqueda decide cuáles se dibujan.
+  let todos = [];
+
+  /** Reemplaza los puntos del listado por los de la lista recibida. */
   function mostrarPuntos(puntos) {
-    cuerpo.replaceChildren(...puntos.map(crearFila));
-    mensajeVacio.hidden = puntos.length > 0;
+    todos = puntos;
+    dibujar();
   }
+
+  /** Dibuja las filas de los puntos que coinciden con la búsqueda. */
+  function dibujar() {
+    const buscado = normalizar(buscador.value.trim());
+    const visibles = todos.filter((punto) =>
+      normalizar(punto.nombre).includes(buscado)
+    );
+
+    cuerpo.replaceChildren(...visibles.map(crearFila));
+    cantidad.textContent =
+      visibles.length === todos.length
+        ? `(${todos.length})`
+        : `(${visibles.length} de ${todos.length})`;
+    mensajeVacio.textContent =
+      todos.length === 0
+        ? MENSAJES_VACIO.sinPuntos
+        : MENSAJES_VACIO.sinCoincidencias;
+    mensajeVacio.hidden = visibles.length > 0;
+  }
+
+  // La búsqueda filtra los puntos ya cargados, sin pedirle nada al backend.
+  buscador.addEventListener("input", dibujar);
 
   function crearFila(punto) {
     const fila = document.createElement("tr");
     fila.append(
-      crearCelda(punto.nombre),
+      crearCelda(
+        crearBoton(punto.nombre, "tabla__nombre", () => alSeleccionar(punto))
+      ),
       crearCelda(crearEtiquetaEstado(punto.estado)),
       crearCelda(crearCoordenadas(punto), "tabla__coordenadas"),
       crearCelda(crearAcciones(punto), "tabla__acciones")
@@ -74,4 +109,12 @@ function crearCoordenadas(punto) {
     coordenadas.append(renglon);
   }
   return coordenadas;
+}
+
+/** Pasa a minúsculas y quita los acentos, para que "bahia" encuentre "Bahía". */
+function normalizar(texto) {
+  return texto
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "");
 }

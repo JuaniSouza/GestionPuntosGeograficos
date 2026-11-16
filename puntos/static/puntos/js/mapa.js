@@ -15,6 +15,8 @@ export function crearMapa(idElemento, { alHacerClic }) {
 
   // Capa que agrupa los marcadores, para poder borrarlos todos juntos.
   const capaMarcadores = L.layerGroup().addTo(mapa);
+  // Marcador de cada punto según su id, para poder abrir su popup.
+  const marcadores = new Map();
 
   mapa.on("click", (evento) => {
     // El mapa se repite hacia los costados y ahí la longitud pasa de 180.
@@ -26,22 +28,48 @@ export function crearMapa(idElemento, { alHacerClic }) {
   /** Reemplaza los marcadores por los de la lista recibida. */
   function mostrarPuntos(puntos) {
     capaMarcadores.clearLayers();
+    marcadores.clear();
     for (const punto of puntos) {
-      crearMarcador(punto).addTo(capaMarcadores);
+      const marcador = crearMarcador(punto).addTo(capaMarcadores);
+      marcadores.set(punto.id, marcador);
     }
   }
 
-  /** Mueve el mapa para que se vean todos los puntos. */
-  function encuadrar(puntos) {
-    if (puntos.length === 0) return;
-    const coordenadas = puntos.map((punto) => [punto.latitud, punto.longitud]);
+  /**
+   * Mueve el mapa para que las coordenadas queden a la vista.
+   * zonaTapada indica cuántos píxeles del mapa cubre el panel del listado
+   * ({ derecha, abajo }): esa parte se descuenta para que nada quede detrás.
+   */
+  function ajustarVista(coordenadas, zoomMaximo, zonaTapada) {
+    const [margenX, margenY] = MAPA.margenAlEncuadrar;
     mapa.fitBounds(coordenadas, {
-      maxZoom: MAPA.zoomMaximoAlEncuadrar,
-      padding: MAPA.margenAlEncuadrar,
+      maxZoom: zoomMaximo,
+      paddingTopLeft: [margenX, margenY],
+      paddingBottomRight: [
+        margenX + zonaTapada.derecha,
+        margenY + zonaTapada.abajo,
+      ],
     });
   }
 
-  return { mostrarPuntos, encuadrar };
+  /** Mueve el mapa para que se vean todos los puntos. */
+  function encuadrar(puntos, zonaTapada) {
+    if (puntos.length === 0) return;
+    const coordenadas = puntos.map((punto) => [punto.latitud, punto.longitud]);
+    ajustarVista(coordenadas, MAPA.zoomMaximoAlEncuadrar, zonaTapada);
+  }
+
+  /** Lleva el mapa hasta un punto y abre su popup. */
+  function enfocar(punto, zonaTapada) {
+    ajustarVista(
+      [[punto.latitud, punto.longitud]],
+      MAPA.zoomAlEnfocar,
+      zonaTapada
+    );
+    marcadores.get(punto.id)?.openPopup();
+  }
+
+  return { mostrarPuntos, encuadrar, enfocar };
 }
 
 function crearMarcador(punto) {

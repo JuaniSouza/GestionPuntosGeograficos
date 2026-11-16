@@ -283,6 +283,12 @@ class PaginaInicioTests(TestCase):
         self.assertContains(respuesta, 'id="panel-listado"')
         self.assertContains(respuesta, 'id="panel-alternar"')
 
+    def test_el_listado_tiene_buscador_y_contador(self):
+        respuesta = self.client.get("/")
+
+        self.assertContains(respuesta, 'id="buscador"')
+        self.assertContains(respuesta, 'id="listado-cantidad"')
+
     def test_carga_leaflet_y_el_javascript_de_la_pagina(self):
         respuesta = self.client.get("/")
 

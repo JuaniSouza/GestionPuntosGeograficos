@@ -24,6 +24,8 @@ export const MAPA = {
   zoomInicial: 4,
   // Zoom máximo al encuadrar los puntos, para no acercar de más si hay uno solo.
   zoomMaximoAlEncuadrar: 14,
+  // Zoom al que se acerca el mapa cuando se elige un punto del listado.
+  zoomAlEnfocar: 11,
   // Margen en píxeles entre los puntos y el borde del mapa al encuadrar.
   margenAlEncuadrar: [40, 40],
   urlTeselas: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",

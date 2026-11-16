@@ -19,6 +19,24 @@ export function crearPanel() {
     plegar(!panel.classList.contains(CLASE_PLEGADO));
   });
 
+  const pantallaAngosta = window.matchMedia(CONSULTA_PANTALLA_ANGOSTA);
+
+  /**
+   * Cuántos píxeles del mapa cubre el panel: { derecha, abajo }.
+   * En pantallas anchas está al costado y en las angostas, abajo.
+   */
+  function zonaTapada() {
+    const marco = panel.parentElement.getBoundingClientRect();
+    const caja = panel.getBoundingClientRect();
+    if (pantallaAngosta.matches) {
+      return { derecha: 0, abajo: marco.bottom - caja.top };
+    }
+    const plegado = panel.classList.contains(CLASE_PLEGADO);
+    return { derecha: plegado ? 0 : marco.right - caja.left, abajo: 0 };
+  }
+
   // En el celular arranca plegado: primero se ve el mapa.
-  plegar(window.matchMedia(CONSULTA_PANTALLA_ANGOSTA).matches);
+  plegar(pantallaAngosta.matches);
+
+  return { zonaTapada };
 }

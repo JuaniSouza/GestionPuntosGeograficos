@@ -20,7 +20,7 @@ const MENSAJES = {
     `¿Eliminar "${punto.nombre}"? Esta acción no se puede deshacer.`,
 };
 
-crearPanel();
+const panel = crearPanel();
 const confirmacion = crearConfirmacion();
 const formulario = crearFormulario({
   alGuardar: async (datos, punto) => {
@@ -36,6 +36,7 @@ const mapa = crearMapa("mapa", { alHacerClic: formulario.abrirParaCrear });
 const tabla = crearTabla({
   alEditar: formulario.abrirParaEditar,
   alEliminar: eliminar,
+  alSeleccionar: (punto) => mapa.enfocar(punto, panel.zonaTapada()),
 });
 const aviso = document.getElementById("aviso");
 
@@ -82,4 +83,4 @@ async function cargarPuntos() {
 // Solo al abrir la página se acomoda el mapa para mostrar todos los puntos.
 // Después de cada cambio no, para no mover el mapa mientras se está trabajando.
 const puntosIniciales = await cargarPuntos();
-if (puntosIniciales) mapa.encuadrar(puntosIniciales);
+if (puntosIniciales) mapa.encuadrar(puntosIniciales, panel.zonaTapada());

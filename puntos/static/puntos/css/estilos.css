@@ -118,6 +118,29 @@ body {
   border-top: 1px solid var(--linea);
 }
 
+.panel__cantidad {
+  margin-left: 0.25rem;
+  font-weight: 400;
+  color: var(--tinta-suave);
+  font-variant-numeric: tabular-nums;
+}
+
+.buscador {
+  margin: 0.6rem var(--espacio);
+  padding: 0.45rem 0.6rem;
+  font: inherit;
+  color: var(--tinta);
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+}
+
+.buscador:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 1px;
+  border-color: var(--agua);
+}
+
 /* Panel plegado: queda solo la cabecera. La clase la pone panel.js. */
 .panel--plegado .panel__cuerpo {
   display: none;
@@ -182,6 +205,28 @@ body {
 
 .tabla tbody tr:hover {
   background: var(--carta);
+}
+
+/* El nombre es un botón con aspecto de enlace: lleva el mapa hasta el punto. */
+.tabla__nombre {
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--agua);
+  text-align: left;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.tabla__nombre:hover {
+  text-decoration: underline;
+}
+
+.tabla__nombre:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
 }
 
 .tabla__coordenadas {
