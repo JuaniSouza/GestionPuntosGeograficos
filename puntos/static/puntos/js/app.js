@@ -9,6 +9,7 @@ import {
 import { crearConfirmacion } from "./confirmacion.js";
 import { crearFormulario } from "./formulario.js";
 import { crearMapa } from "./mapa.js";
+import { crearPanel } from "./panel.js";
 import { crearTabla } from "./tabla.js";
 
 const MENSAJES = {
@@ -19,6 +20,7 @@ const MENSAJES = {
     `¿Eliminar "${punto.nombre}"? Esta acción no se puede deshacer.`,
 };
 
+crearPanel();
 const confirmacion = crearConfirmacion();
 const formulario = crearFormulario({
   alGuardar: async (datos, punto) => {

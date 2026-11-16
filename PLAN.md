@@ -85,6 +85,17 @@ Cada paso arranca por sus tests (caso feliz y casos de error).
   y endpoints.
 - [x] **19. Repaso final.** Revisión completa del código y guion para la defensa.
 
+## Etapa 6 — Mejoras de diseño
+
+Fuera de la consigna. Se tomó como referencia el estilo de GeoCrux.
+
+- [x] **20. Mapa a pantalla completa.** El listado pasa a ser un panel flotante
+  que se puede plegar.
+- [ ] **21. Buscador.** Filtra el listado por nombre y muestra la cantidad.
+- [ ] **22. Ir al punto.** Al elegir un punto del listado, el mapa se centra en
+  él y abre su información.
+- [ ] **23. Diseño de los marcadores.**
+
 ## Skills
 
 Antes de cada paso se revisa esta tabla y se carga la skill que corresponda.

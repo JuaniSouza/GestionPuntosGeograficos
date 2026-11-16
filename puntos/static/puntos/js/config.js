@@ -14,6 +14,10 @@ const configBackend = JSON.parse(
 export const ESTADOS = configBackend.estados;
 export const DECIMALES_COORDENADA = configBackend.decimales_coordenada;
 
+// Por debajo de este ancho el panel del listado arranca plegado, para que se
+// vea el mapa. Coincide con la media query de estilos.css.
+export const CONSULTA_PANTALLA_ANGOSTA = "(max-width: 700px)";
+
 export const MAPA = {
   // Vista inicial cuando todavía no hay puntos: Argentina completa.
   centroInicial: [-38.4, -63.6],

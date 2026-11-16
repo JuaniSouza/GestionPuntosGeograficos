@@ -16,6 +16,9 @@
   --espacio: 1rem;
   --radio: 6px;
   --alto-encabezado: 3.5rem;
+  --ancho-panel: 31rem;
+  --alto-creditos: 1.75rem;  /* franja de créditos al pie del mapa */
+  --sombra: 0 6px 24px rgb(18 38 58 / 0.28);
 }
 
 *,
@@ -26,7 +29,8 @@
 
 body {
   margin: 0;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--carta);
@@ -60,40 +64,63 @@ body {
   color: #b9cbd6;
 }
 
-/* Estructura: mapa a la izquierda y listado a la derecha.
-   En pantallas angostas se apilan (ver la media query del final). */
+/* Estructura: el mapa ocupa toda la pantalla y el panel del listado flota
+   encima. .contenido es el marco de referencia para ubicar los dos. */
 .contenido {
   flex: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--espacio);
-  padding: var(--espacio);
+  position: relative;
+  min-height: 0;
+}
+
+.mapa {
+  position: absolute;
+  inset: 0;
+  background: #d4e3e8;
+  /* Leaflet usa z-index altos; con esto quedan encerrados dentro del mapa
+     y no tapan el panel. */
+  isolation: isolate;
 }
 
 .panel {
+  position: absolute;
+  top: var(--espacio);
+  right: var(--espacio);
+  width: min(var(--ancho-panel), calc(100% - 2 * var(--espacio)));
+  /* Deja libre el borde inferior, donde el mapa muestra sus créditos. */
+  max-height: calc(100% - var(--espacio) - var(--alto-creditos));
+  display: flex;
+  flex-direction: column;
   background: var(--superficie);
   border: 1px solid var(--linea);
   border-radius: var(--radio);
+  box-shadow: var(--sombra);
   overflow: hidden;
 }
 
-.panel--listado {
+.panel__cabecera {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio);
+  padding: 0.6rem var(--espacio);
 }
 
 .panel__titulo {
   margin: 0;
-  padding: 0.75rem var(--espacio);
   font-size: 1rem;
   font-weight: 650;
-  border-bottom: 1px solid var(--linea);
 }
 
-.mapa {
-  height: 100%;
-  min-height: 24rem;
-  background: #d4e3e8;
+.panel__cuerpo {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-top: 1px solid var(--linea);
+}
+
+/* Panel plegado: queda solo la cabecera. La clase la pone panel.js. */
+.panel--plegado .panel__cuerpo {
+  display: none;
 }
 
 /* Marcadores del mapa: un círculo cuyo color depende del estado del punto. */
@@ -234,148 +261,61 @@ body {
   outline-offset: 2px;
 }
 
-@media (max-width: 1000px) {
-  .contenido {
-    grid-template-columns: 1fr;
-  }
-
-  .mapa {
-    height: 55vh;
+/* En pantallas angostas el panel pasa abajo y ocupa todo el ancho. */
+@media (max-width: 700px) {
+  .panel {
+    top: auto;
+    bottom: var(--alto-creditos);
+    left: var(--espacio);
+    right: var(--espacio);
+    width: auto;
+    max-height: 55%;
   }
 }
 
+/* En el celular las cuatro columnas no entran. Cada fila se reacomoda como
+   una ficha: nombre, estado y coordenadas a la izquierda, acciones a la
+   derecha. Sigue siendo una tabla para los lectores de pantalla. */
 @media (max-width: 480px) {
-  /* En el celular los botones se apilan para que la tabla entre a lo ancho. */
+  /* Los títulos de columna se ocultan a la vista, no a los lectores. */
+  .tabla thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .tabla tbody tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.15rem var(--espacio);
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .tabla tbody td {
+    grid-column: 1;
+    padding: 0;
+    border: 0;
+    text-align: left;
+  }
+
+  .tabla td:first-child {
+    font-weight: 600;
+  }
+
+  .tabla td.tabla__coordenadas {
+    color: var(--tinta-suave);
+  }
+
+  .tabla td.tabla__acciones {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: center;
+  }
+
   .acciones {
     flex-direction: column;
   }
-}
-
-/* Formulario en ventana modal */
-.dialogo {
-  width: min(28rem, calc(100vw - 2 * var(--espacio)));
-  padding: 0;
-  color: var(--tinta);
-  background: var(--superficie);
-  border: 1px solid var(--linea);
-  border-radius: var(--radio);
-  box-shadow: 0 12px 40px rgb(18 38 58 / 0.35);
-}
-
-/* Fondo que oscurece la página mientras la ventana está abierta. */
-.dialogo::backdrop {
-  background: rgb(18 38 58 / 0.55);
-}
-
-.formulario {
-  display: grid;
-  gap: var(--espacio);
-  padding: 1.25rem;
-}
-
-.dialogo__titulo {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 650;
-}
-
-.dialogo__mensaje {
-  margin: 0;
-  overflow-wrap: anywhere;
-}
-
-.aviso--en-formulario {
-  margin: 0;
-}
-
-/* Dos columnas: latitud y longitud comparten renglón, el resto ocupa todo el ancho. */
-.formulario__campos {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.85rem var(--espacio);
-}
-
-.campo {
-  display: grid;
-  gap: 0.25rem;
-  grid-column: 1 / -1;
-}
-
-.campo--latitud,
-.campo--longitud {
-  grid-column: auto;
-}
-
-.campo label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--tinta-suave);
-}
-
-.campo input,
-.campo textarea,
-.campo select {
-  width: 100%;
-  padding: 0.45rem 0.6rem;
-  font: inherit;
-  color: var(--tinta);
-  background: var(--superficie);
-  border: 1px solid var(--linea);
-  border-radius: var(--radio);
-}
-
-/* aria-invalid lo pone formulario.js en los campos con error. */
-.campo [aria-invalid="true"] {
-  border-color: var(--error);
-  background: var(--error-fondo);
-}
-
-.campo__error {
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--error);
-}
-
-.campo textarea {
-  resize: vertical;
-}
-
-.campo--latitud input,
-.campo--longitud input {
-  font-variant-numeric: tabular-nums;
-}
-
-.campo input:focus-visible,
-.campo textarea:focus-visible,
-.campo select:focus-visible {
-  outline: 3px solid var(--foco);
-  outline-offset: 1px;
-  border-color: var(--agua);
-}
-
-.formulario__acciones {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-}
-
-.formulario__acciones .boton {
-  padding: 0.45rem 0.9rem;
-  font-size: 0.9rem;
-}
-
-.boton--principal {
-  color: var(--superficie);
-  background: var(--agua);
-  border-color: var(--agua);
-}
-
-.boton--principal:hover {
-  background: var(--tinta);
-  border-color: var(--tinta);
-}
-
-.boton:disabled {
-  opacity: 0.6;
-  cursor: progress;
 }

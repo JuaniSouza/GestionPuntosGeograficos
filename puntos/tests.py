@@ -277,6 +277,12 @@ class PaginaInicioTests(TestCase):
         self.assertContains(respuesta, 'id="mapa"')
         self.assertContains(respuesta, 'id="tabla-puntos"')
 
+    def test_el_listado_es_un_panel_que_se_puede_plegar(self):
+        respuesta = self.client.get("/")
+
+        self.assertContains(respuesta, 'id="panel-listado"')
+        self.assertContains(respuesta, 'id="panel-alternar"')
+
     def test_carga_leaflet_y_el_javascript_de_la_pagina(self):
         respuesta = self.client.get("/")
 
