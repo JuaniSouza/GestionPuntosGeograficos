@@ -356,6 +356,137 @@ body {
   outline-offset: 2px;
 }
 
+/* Formulario en ventana modal */
+.dialogo {
+  width: min(28rem, calc(100vw - 2 * var(--espacio)));
+  padding: 0;
+  color: var(--tinta);
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+/* Fondo que oscurece la página mientras la ventana está abierta. */
+.dialogo::backdrop {
+  background: rgb(18 38 58 / 0.55);
+}
+
+.formulario {
+  display: grid;
+  gap: var(--espacio);
+  padding: 1.25rem;
+}
+
+.dialogo__titulo {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 650;
+}
+
+.dialogo__mensaje {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.aviso--en-formulario {
+  margin: 0;
+}
+
+/* Dos columnas: latitud y longitud comparten renglón, el resto ocupa todo el ancho. */
+.formulario__campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem var(--espacio);
+}
+
+.campo {
+  display: grid;
+  gap: 0.25rem;
+  /* Si el campo de al lado muestra un error, este no se estira. */
+  align-content: start;
+  grid-column: 1 / -1;
+}
+
+.campo--latitud,
+.campo--longitud {
+  grid-column: auto;
+}
+
+.campo label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--tinta-suave);
+}
+
+.campo input,
+.campo textarea,
+.campo select {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  font: inherit;
+  color: var(--tinta);
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+}
+
+/* aria-invalid lo pone formulario.js en los campos con error. */
+.campo [aria-invalid="true"] {
+  border-color: var(--error);
+  background: var(--error-fondo);
+}
+
+.campo__error {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--error);
+}
+
+.campo textarea {
+  resize: vertical;
+}
+
+.campo--latitud input,
+.campo--longitud input {
+  font-variant-numeric: tabular-nums;
+}
+
+.campo input:focus-visible,
+.campo textarea:focus-visible,
+.campo select:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 1px;
+  border-color: var(--agua);
+}
+
+.formulario__acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.formulario__acciones .boton {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.boton--principal {
+  color: var(--superficie);
+  background: var(--agua);
+  border-color: var(--agua);
+}
+
+.boton--principal:hover {
+  background: var(--tinta);
+  border-color: var(--tinta);
+}
+
+.boton:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
 /* En pantallas angostas el panel pasa abajo y ocupa todo el ancho. */
 @media (max-width: 700px) {
   .panel {
