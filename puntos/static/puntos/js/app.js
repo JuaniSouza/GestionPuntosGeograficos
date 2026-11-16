@@ -7,6 +7,7 @@ import {
   listarPuntos,
 } from "./api.js";
 import { crearConfirmacion } from "./confirmacion.js";
+import { crearFiltros } from "./filtros.js";
 import { crearFormulario } from "./formulario.js";
 import { crearMapa } from "./mapa.js";
 import { crearPanel } from "./panel.js";
@@ -38,7 +39,18 @@ const tabla = crearTabla({
   alEliminar: eliminar,
   alSeleccionar: (punto) => mapa.enfocar(punto, panel.zonaTapada()),
 });
+const filtros = crearFiltros({ alCambiar: mostrarPuntos });
 const aviso = document.getElementById("aviso");
+
+// Todos los puntos que devolvió el backend la última vez.
+let puntos = [];
+
+/** Dibuja en el mapa y en la tabla los puntos que pasan los filtros. */
+function mostrarPuntos() {
+  const visibles = filtros.aplicar(puntos);
+  mapa.mostrarPuntos(visibles);
+  tabla.mostrarPuntos(visibles, puntos.length);
+}
 
 function mostrarAviso(texto) {
   aviso.textContent = texto;
@@ -68,9 +80,8 @@ async function eliminar(punto) {
  */
 async function cargarPuntos() {
   try {
-    const puntos = await listarPuntos();
-    mapa.mostrarPuntos(puntos);
-    tabla.mostrarPuntos(puntos);
+    puntos = await listarPuntos();
+    mostrarPuntos();
     aviso.hidden = true;
     return puntos;
   } catch (error) {

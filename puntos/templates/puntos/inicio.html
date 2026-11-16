@@ -31,8 +31,17 @@
       </header>
 
       <div id="panel-cuerpo" class="panel__cuerpo">
-        <input type="search" id="buscador" class="buscador"
-               placeholder="Buscar por nombre" aria-label="Buscar puntos por nombre">
+        <div class="filtros">
+          <input type="search" id="buscador" class="filtros__control filtros__control--buscador"
+                 placeholder="Buscar por nombre" aria-label="Buscar puntos por nombre">
+          {# Las opciones salen de los estados que define el modelo. #}
+          <select id="filtro-estado" class="filtros__control" aria-label="Filtrar por estado">
+            <option value="">Todos los estados</option>
+            {% for valor, etiqueta in config.estados.items %}
+              <option value="{{ valor }}">{{ etiqueta }}</option>
+            {% endfor %}
+          </select>
+        </div>
         <div class="tabla-contenedor">
           <table id="tabla-puntos" class="tabla">
             <thead>

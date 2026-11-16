@@ -1,6 +1,6 @@
 // Todo lo relacionado con Leaflet. L es el objeto global que define leaflet.js.
 
-import { MAPA } from "./config.js";
+import { DECIMALES_COORDENADA, MAPA } from "./config.js";
 
 /**
  * Crea el mapa dentro del elemento con ese id y devuelve sus operaciones.
@@ -12,6 +12,9 @@ export function crearMapa(idElemento, { alHacerClic }) {
     attribution: MAPA.atribucion,
     referrerPolicy: MAPA.politicaDeReferencia,
   }).addTo(mapa);
+
+  agregarSenalesNauticas(mapa);
+  agregarCoordenadasDelCursor(mapa);
 
   // Capa que agrupa los marcadores, para poder borrarlos todos juntos.
   const capaMarcadores = L.layerGroup().addTo(mapa);
@@ -70,6 +73,38 @@ export function crearMapa(idElemento, { alHacerClic }) {
   }
 
   return { mostrarPuntos, encuadrar, enfocar };
+}
+
+/** Suma la capa de señales náuticas y un control para mostrarla u ocultarla. */
+function agregarSenalesNauticas(mapa) {
+  const { nombre, urlTeselas, atribucion } = MAPA.senalesNauticas;
+  const capa = L.tileLayer(urlTeselas, {
+    attribution: atribucion,
+    referrerPolicy: MAPA.politicaDeReferencia,
+  }).addTo(mapa);
+  // L.control.layers arma la casilla para prender y apagar la capa.
+  L.control.layers(null, { [nombre]: capa }, { position: "topleft" }).addTo(mapa);
+}
+
+/** Muestra en una esquina la latitud y la longitud bajo el cursor. */
+function agregarCoordenadasDelCursor(mapa) {
+  const control = L.control({ position: "bottomleft" });
+  let caja;
+  control.onAdd = () => {
+    caja = L.DomUtil.create("div", "coordenadas-cursor");
+    return caja;
+  };
+  control.addTo(mapa);
+
+  mapa.on("mousemove", (evento) => {
+    const { lat, lng } = evento.latlng.wrap();
+    caja.textContent = [lat, lng]
+      .map((valor) => valor.toFixed(DECIMALES_COORDENADA))
+      .join(", ");
+  });
+  mapa.on("mouseout", () => {
+    caja.textContent = "";
+  });
 }
 
 function crearMarcador(punto) {

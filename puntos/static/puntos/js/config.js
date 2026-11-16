@@ -36,4 +36,11 @@ export const MAPA = {
   politicaDeReferencia: "strict-origin-when-cross-origin",
   atribucion:
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  // Capa opcional que se dibuja encima: boyas, balizas y faros de OpenSeaMap.
+  // Son imágenes transparentes que solo traen las señales.
+  senalesNauticas: {
+    nombre: "Señales náuticas",
+    urlTeselas: "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
+    atribucion: '&copy; <a href="https://www.openseamap.org/">OpenSeaMap</a>',
+  },
 };

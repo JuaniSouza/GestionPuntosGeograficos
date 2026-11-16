@@ -136,8 +136,15 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-.buscador {
+/* Buscador y filtro por estado, uno al lado del otro. */
+.filtros {
+  display: flex;
+  gap: 0.5rem;
   margin: 0.6rem var(--espacio);
+}
+
+.filtros__control {
+  min-width: 0;
   padding: 0.45rem 0.6rem;
   font: inherit;
   color: var(--tinta);
@@ -146,7 +153,11 @@ body {
   border-radius: var(--radio);
 }
 
-.buscador:focus-visible {
+.filtros__control--buscador {
+  flex: 1;
+}
+
+.filtros__control:focus-visible {
   outline: 3px solid var(--foco);
   outline-offset: 1px;
   border-color: var(--agua);
@@ -173,6 +184,22 @@ body {
 .popup__descripcion {
   margin: 0.25rem 0 0;
   color: var(--tinta-suave);
+}
+
+/* Coordenadas del cursor, en la esquina inferior izquierda del mapa. */
+.coordenadas-cursor {
+  padding: 0.2rem 0.55rem;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  background: var(--tinta);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+/* Vacío hasta que el cursor entra al mapa (y siempre en pantallas táctiles). */
+.coordenadas-cursor:empty {
+  display: none;
 }
 
 /* Aviso de error */

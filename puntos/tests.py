@@ -289,6 +289,17 @@ class PaginaInicioTests(TestCase):
         self.assertContains(respuesta, 'id="buscador"')
         self.assertContains(respuesta, 'id="listado-cantidad"')
 
+    def test_el_filtro_ofrece_todos_y_cada_estado_del_modelo(self):
+        respuesta = self.client.get("/")
+
+        self.assertContains(respuesta, 'id="filtro-estado"')
+        self.assertContains(respuesta, '<option value="">Todos los estados</option>')
+        for valor, etiqueta in Punto.Estado.choices:
+            with self.subTest(estado=valor):
+                self.assertContains(
+                    respuesta, f'<option value="{valor}">{etiqueta}</option>'
+                )
+
     def test_carga_leaflet_y_el_javascript_de_la_pagina(self):
         respuesta = self.client.get("/")
 

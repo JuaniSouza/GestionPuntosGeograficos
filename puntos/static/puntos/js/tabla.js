@@ -4,7 +4,7 @@ import { DECIMALES_COORDENADA, ESTADOS } from "./config.js";
 
 const MENSAJES_VACIO = {
   sinPuntos: "Todavía no hay puntos cargados.",
-  sinCoincidencias: "Ningún punto coincide con la búsqueda.",
+  sinCoincidencias: "Ningún punto coincide con los filtros.",
 };
 
 /**
@@ -15,39 +15,21 @@ const MENSAJES_VACIO = {
 export function crearTabla({ alEditar, alEliminar, alSeleccionar }) {
   const cuerpo = document.getElementById("tabla-puntos-cuerpo");
   const mensajeVacio = document.getElementById("listado-vacio");
-  const buscador = document.getElementById("buscador");
   const cantidad = document.getElementById("listado-cantidad");
 
-  // Todos los puntos recibidos; la búsqueda decide cuáles se dibujan.
-  let todos = [];
-
-  /** Reemplaza los puntos del listado por los de la lista recibida. */
-  function mostrarPuntos(puntos) {
-    todos = puntos;
-    dibujar();
-  }
-
-  /** Dibuja las filas de los puntos que coinciden con la búsqueda. */
-  function dibujar() {
-    const buscado = normalizar(buscador.value.trim());
-    const visibles = todos.filter((punto) =>
-      normalizar(punto.nombre).includes(buscado)
-    );
-
-    cuerpo.replaceChildren(...visibles.map(crearFila));
+  /**
+   * Reemplaza las filas por las de los puntos recibidos.
+   * total es la cantidad de puntos que existen, contando los que los
+   * filtros dejaron afuera.
+   */
+  function mostrarPuntos(puntos, total) {
+    cuerpo.replaceChildren(...puntos.map(crearFila));
     cantidad.textContent =
-      visibles.length === todos.length
-        ? `(${todos.length})`
-        : `(${visibles.length} de ${todos.length})`;
+      puntos.length === total ? `(${total})` : `(${puntos.length} de ${total})`;
     mensajeVacio.textContent =
-      todos.length === 0
-        ? MENSAJES_VACIO.sinPuntos
-        : MENSAJES_VACIO.sinCoincidencias;
-    mensajeVacio.hidden = visibles.length > 0;
+      total === 0 ? MENSAJES_VACIO.sinPuntos : MENSAJES_VACIO.sinCoincidencias;
+    mensajeVacio.hidden = puntos.length > 0;
   }
-
-  // La búsqueda filtra los puntos ya cargados, sin pedirle nada al backend.
-  buscador.addEventListener("input", dibujar);
 
   function crearFila(punto) {
     const fila = document.createElement("tr");
@@ -109,12 +91,4 @@ function crearCoordenadas(punto) {
     coordenadas.append(renglon);
   }
   return coordenadas;
-}
-
-/** Pasa a minúsculas y quita los acentos, para que "bahia" encuentre "Bahía". */
-function normalizar(texto) {
-  return texto
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "");
 }

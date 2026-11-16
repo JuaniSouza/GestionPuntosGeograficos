@@ -94,7 +94,10 @@ Fuera de la consigna. Se tomó como referencia el estilo de GeoCrux.
 - [x] **21. Buscador.** Filtra el listado por nombre y muestra la cantidad.
 - [x] **22. Ir al punto.** Al elegir un punto del listado, el mapa se centra en
   él y abre su información.
-- [ ] **23. Diseño de los marcadores.**
+- [x] **23. Filtro por estado.** Junto al buscador; filtra el listado y el mapa.
+- [x] **24. Coordenadas del cursor** en una esquina del mapa.
+- [x] **25. Capa de señales náuticas** (OpenSeaMap), que se puede apagar.
+- [x] **26. README al día** con el diseño nuevo.
 
 ## Skills
 
